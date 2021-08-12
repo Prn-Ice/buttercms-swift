@@ -1,6 +1,7 @@
     import XCTest
     @testable import ButterCMSSDK
 
+    @available(iOS 11.0, macOS 10.13, *)
     final class ButterCMSSDKTests: XCTestCase {
         let jsonDecoder = JSONDecoder()
 
@@ -200,17 +201,16 @@
             let expectation = XCTestExpectation(description: "Get Authors")
             var butter = ButterCMSClient()
             butter.token = "3606556ecbd4134ea24b8936a829ab9edaddb583"
-            butter.getAuthors() { authors, error in
-                if let error = error {
+            butter.getAuthors() { result in
+                switch result {
+                case .success(let authors):
+                    print (" --- Authors ----")
+                    print("\(authors.data.count)")
+                    for a in authors.data {
+                        print("\(a.firstName)")
+                    }
+                case .failure(let error):
                     print("\(error)")
-                }
-                print (" --- Authors ----")
-                guard let authors = authors else {
-                    print (" are empty ")
-                    return }
-                print("\(authors.data.count)")
-                for a in authors.data {
-                    print("\(a.firstName)")
                 }
                 expectation.fulfill()
             }

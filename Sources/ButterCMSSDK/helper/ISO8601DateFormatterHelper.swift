@@ -8,7 +8,7 @@
 
 import Foundation
 
-@available(macOS 10.13, *)
+@available(iOS 11.0, macOS 10.13, *)
 extension ISO8601DateFormatter {
     convenience init(_ formatOptions: Options) {
         self.init()
@@ -16,9 +16,10 @@ extension ISO8601DateFormatter {
     }
 }
 
+
 extension Formatter {
-    @available(macOS 10.13, *)
+    @available(iOS 11.0, macOS 10.13, *)
     static let iso8601withFractionalSeconds = ISO8601DateFormatter([.withInternetDateTime, .withFractionalSeconds])
-    @available(macOS 10.13, *)
+    @available(iOS 11.0, macOS 10.13, *)
     static let iso8601 = ISO8601DateFormatter([.withInternetDateTime])
 }

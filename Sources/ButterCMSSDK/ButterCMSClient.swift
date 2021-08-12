@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@available(macOS 10.13, *)
+@available(iOS 11.0, macOS 10.13, *)
 public struct ButterCMSClient {
     var scheme = "https"
     var host = "api.buttercms.com"
@@ -43,43 +43,43 @@ public struct ButterCMSClient {
         return jsonDecoder
     }()
 
-    func getAuthors(closure: @escaping (AuthorsResponse?, Error?) ->()) {
-        getRequest(endpoint: authorsEndpoint,closure: closure)
+    func getAuthors(completion: @escaping (Result<AuthorsResponse, Error>) ->()) {
+        getRequest(endpoint: authorsEndpoint,completion: completion)
     }
 
-    private func getRequest<T: Decodable>(endpoint: String, closure: @escaping (T?, Error?)-> ()) {
+    private func getRequest<T: Decodable>(endpoint: String, completion: @escaping (Result<T, Error>) -> ()) {
         do {
             var request = try prepareRequest(for: endpoint, with: ["auth_token" : self.token])
             request.httpMethod = "GET"
             let task = urlSession.dataTask(with: request) { data, response, error in
-                if error != nil {
-                        closure(nil,error)
-                        return
+                if let error = error {
+                    completion(.failure(error))
+                    return
                 }
                 guard let data = data else {
-                    closure(nil, ButterCMSError(error: .noDataReturned))
+                    completion(.failure(ButterCMSError(error: .noDataReturned)))
                     return
                 }
                 guard let response = response as? HTTPURLResponse else {
-                    closure(nil, ButterCMSError(error: .responseNotHTTPURLResponse))
+                    completion(.failure(ButterCMSError(error: .responseNotHTTPURLResponse)))
                     return
                 }
                 guard (200...299).contains(response.statusCode) else {
-                    closure(nil, ButterCMSError(error: .serverResponseNoOK(response.statusCode)))
+                    completion(.failure(ButterCMSError(error: .serverResponseNoOK(response.statusCode))))
                     return
                 }
                 do {
                     let object = try jsonDecoder.decode(T.self, from: data)
-                    closure(object,nil)
+                    completion(.success(object))
                 }
                 catch {
-                    closure(nil,ButterCMSError(error: .canNotDecodeData(data)))
+                    completion(.failure(ButterCMSError(error: .canNotDecodeData(data))))
                 }
             }
             task.resume()
         }
         catch {
-            closure(nil, error)
+            completion(.failure(error))
         }
     }
 
