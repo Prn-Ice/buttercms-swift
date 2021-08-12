@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  Author.swift
+//  ButterCMSSDK
 //
 //  Created by Martin Srb on 29.07.2021.
 //
@@ -23,10 +23,6 @@ public struct Author: Codable {
     var recentPosts: [Post]?
 }
 
-import Foundation
 public struct AuthorsResponse: Codable {
     var data: [Author]
 }
-
-
-

@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  Tag.swift
+//  ButterCMSSDK
 //
 //  Created by Martin Srb on 31.07.2021.
 //
@@ -19,4 +19,3 @@ public struct TagResponse: Codable {
 public struct TagsResponse: Codable {
     var data: [Tag]
 }
-

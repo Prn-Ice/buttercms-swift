@@ -1,8 +1,8 @@
-    import XCTest
-    @testable import ButterCMSSDK
+import XCTest
+@testable import ButterCMSSDK
 
-    @available(iOS 11.0, macOS 10.13, *)
-    final class ButterCMSSDKTests: XCTestCase {
+@available(iOS 11.0, macOS 10.13, *)
+final class ButterCMSSDKTests: XCTestCase {
         let jsonDecoder = JSONDecoder()
 
         let authors = """
@@ -164,8 +164,7 @@
                 }
                 if let date = date {
                     return date
-                }
-                else {
+                } else {
                     throw DecodingError.dataCorruptedError(in: container,
                                                            debugDescription: "Invalid date: " + string)
                 }
@@ -201,10 +200,10 @@
             let expectation = XCTestExpectation(description: "Get Authors")
             var butter = ButterCMSClient()
             butter.token = "3606556ecbd4134ea24b8936a829ab9edaddb583"
-            butter.getAuthors() { result in
+            butter.getAuthors { result in
                 switch result {
                 case .success(let authors):
-                    print (" --- Authors ----")
+                    print(" --- Authors ----")
                     print("\(authors.data.count)")
                     for a in authors.data {
                         print("\(a.firstName)")
@@ -216,4 +215,4 @@
             }
             wait(for: [expectation], timeout: 10.0)
         }
-    }
+}

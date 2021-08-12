@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  Post.swift
+//  ButterCMSSDK
 //
 //  Created by Martin Srb on 29.07.2021.
 //
@@ -20,12 +20,11 @@ public struct Post: Codable {
     var featuredImage: String
     var featuredImageAlt: String
     var url: String
-    var author: Author;
+    var author: Author
     var tags: [Tag]?
     var categories: [Category]?
 }
 
-import Foundation
 public struct PostMeta: Codable {
     var previousPage: PostSummary?
     var nextPage: PostSummary?
@@ -38,7 +37,7 @@ public struct PostSummary: Codable {
     var featuredImage: String
 }
 
-public enum Status:String, Codable {
+public enum Status: String, Codable {
     case DRAFT = "default"
     case PUBLISHED = "published"
 }

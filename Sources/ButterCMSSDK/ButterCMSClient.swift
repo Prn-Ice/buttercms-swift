@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  ButterCMSClient.swift
+//  ButterCMSSDK
 //
 //  Created by Martin Srb on 05.08.2021.
 //
@@ -43,13 +43,13 @@ public struct ButterCMSClient {
         return jsonDecoder
     }()
 
-    func getAuthors(completion: @escaping (Result<AuthorsResponse, Error>) ->()) {
-        getRequest(endpoint: authorsEndpoint,completion: completion)
+    func getAuthors(completion: @escaping (Result<AuthorsResponse, Error>) -> Void) {
+        getRequest(endpoint: authorsEndpoint, completion: completion)
     }
 
-    private func getRequest<T: Decodable>(endpoint: String, completion: @escaping (Result<T, Error>) -> ()) {
+    private func getRequest<T: Decodable>(endpoint: String, completion: @escaping (Result<T, Error>) -> Void) {
         do {
-            var request = try prepareRequest(for: endpoint, with: ["auth_token" : self.token])
+            var request = try prepareRequest(for: endpoint, with: ["auth_token": self.token])
             request.httpMethod = "GET"
             let task = urlSession.dataTask(with: request) { data, response, error in
                 if let error = error {
@@ -71,31 +71,29 @@ public struct ButterCMSClient {
                 do {
                     let object = try jsonDecoder.decode(T.self, from: data)
                     completion(.success(object))
-                }
-                catch {
+                } catch {
                     completion(.failure(ButterCMSError(error: .canNotDecodeData(data))))
                 }
             }
             task.resume()
-        }
-        catch {
+        } catch {
             completion(.failure(error))
         }
     }
 
-    func prepareRequest(for endpoint: String, with parameters: [String:String]) throws -> URLRequest  {
+    func prepareRequest(for endpoint: String, with parameters: [String: String]) throws -> URLRequest  {
         var components = URLComponents()
         components.scheme = scheme
         components.host = host
         components.path = endpoint
         var urlQueryItems = [URLQueryItem]()
         for (name, value) in parameters {
-            urlQueryItems.append(URLQueryItem(name:name,value:value))
+            urlQueryItems.append(URLQueryItem(name: name, value: value))
         }
         components.queryItems = urlQueryItems
         guard let url = components.url else { throw ButterCMSError(error: .wrongURLComponent("scheme: \(scheme), host: \(host), endpoint: \(endpoint)"))}
 
-        var request = URLRequest(url:url)
+        var request = URLRequest(url: url)
         request.httpMethod = "GET"
         return request
     }

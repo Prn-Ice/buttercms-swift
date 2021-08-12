@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  ISO8601DateFormatterHelper.swift
+//  ButterCMSSDK
 //
 //  Created by Martin Srb on 05.08.2021.
 //
@@ -15,7 +15,6 @@ extension ISO8601DateFormatter {
         self.formatOptions = formatOptions
     }
 }
-
 
 extension Formatter {
     @available(iOS 11.0, macOS 10.13, *)

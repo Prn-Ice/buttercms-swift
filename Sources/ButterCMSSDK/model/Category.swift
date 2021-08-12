@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  Category.swift
+//  ButterCMSSDK
 //
 //  Created by Martin Srb on 31.07.2021.
 //
