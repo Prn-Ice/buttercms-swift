@@ -135,6 +135,14 @@ struct TestData {
     
     static let post = """
                 {
+                "meta": {
+                    "next_post": null,
+                    "previous_post": {
+                            "slug": "example-post",
+                            "title": "Example Post",
+                            "featured_image": "https://d2devwt40at1e2.cloudfront.net/api/file/tdt3s1OHRO6wfQOpmAHw"
+                        }
+                },
                 "data":
                     {
                         "status": "published",
@@ -181,17 +189,17 @@ struct TestData {
                 {
                     "status": "published",
                     "created": "2021-08-04T20:30:54.234433Z",
-                    "updated": "2021-08-04T20:31:43.281417Z",
-                    "published": "2021-08-04T20:30:00.000000Z",
-                    "title": "Example 2",
+                    "updated": "2021-08-12T11:31:23.247331Z",
+                    "published": "2021-08-04T20:30:00Z",
+                    "title": "Another example post",
                     "slug": "example-2",
-                    "body": "Body",
+                    "body": "",
                     "summary": "example",
                     "seo_title": "Example 2",
                     "meta_description": "example",
                     "featured_image_alt": "",
                     "url": "example-2",
-                    "featured_image": "https://cdn.buttercms.com/y5Of36JES8YLTqTuP7ig",
+                    "featured_image": "https://d2wzhk7xhrnk1x.cloudfront.net/f9Sen4QQcyVHSDZzI75w_butter-blog-post.jpg",
                     "author": {
                         "bio": "My bio",
                         "slug": "applifting-sample",
@@ -212,11 +220,11 @@ struct TestData {
                 {
                     "status": "published",
                     "created": "2021-07-19T12:24:21.986359Z",
-                    "updated": "2021-07-19T12:24:22.072388Z",
-                    "published": "2021-07-19T12:24:21.985221Z",
+                    "updated": "2021-08-12T11:32:05.292096Z",
+                    "published": "2021-07-19T12:24:00Z",
                     "title": "Example Post",
                     "slug": "example-post",
-                    "body": "Body",
+                    "body": "",
                     "summary": "This is an example blog post. Pretty neat huh?",
                     "seo_title": "Example Post SEO Optimized Title",
                     "meta_description": "This is our example blog posts SEO optimized meta description.",

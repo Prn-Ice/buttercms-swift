@@ -26,9 +26,8 @@ public struct Post: Codable {
 }
 
 public struct PostMeta: Codable {
-    var previousPage: PostSummary?
-    var nextPage: PostSummary?
-    var count: Int
+    var previousPost: PostSummary?
+    var nextPost: PostSummary?
 }
 
 public struct PostSummary: Codable {
@@ -43,10 +42,11 @@ public enum Status: String, Codable {
 }
 
 public struct PostResponse: Codable {
+    var meta: PostMeta
     var data: Post
 }
 
 public struct PostsResponse: Codable {
+    var meta: PaginationMeta
     var data: [Post]
-    var meta: PostMeta
 }
