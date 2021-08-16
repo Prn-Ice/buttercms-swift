@@ -8,10 +8,11 @@
 import Foundation
 @available(iOS 11.0, macOS 10.13, *)
 public struct ButterCMSClient {
+
     var scheme = "https"
     var host = "api.buttercms.com"
-    var authorsEndpoint = "/v2/authors"
-    var categoriesEndpoint = "/categories"
+    var authorsEndpoint = "/authors"
+    var categoryEndpoint = "/categories"
     var pagesEndpoint = "/pages"
     var postsEndpoint = "/posts"
     var tagsEndpoint = "/tags"
@@ -19,6 +20,7 @@ public struct ButterCMSClient {
     var rssEndpoint = "/feeds/rss"
     var atomEndpoint = "/feeds/atom"
     var siteMapEndpoint = "/feeds/sitemap"
+    var apiVersion = "/v2"
     var token = ""
     var urlSession = URLSession.shared
     private var jsonDecoder: JSONDecoder = {
@@ -43,13 +45,42 @@ public struct ButterCMSClient {
         return jsonDecoder
     }()
 
-    func getAuthors(completion: @escaping (Result<AuthorsResponse, Error>) -> Void) {
-        getRequest(endpoint: authorsEndpoint, completion: completion)
+    func getAuthor(with slag: String, completion: @escaping (Result<AuthorResponse, Error>) -> Void) {
+        getRequest(from: "\(apiVersion)/\(authorsEndpoint)/\(slag)", with: nil, completion: completion)
     }
 
-    private func getRequest<T: Decodable>(endpoint: String, completion: @escaping (Result<T, Error>) -> Void) {
+    func getAuthors(with parameters: [String: String]?, completion: @escaping (Result<AuthorsResponse, Error>) -> Void) {
+        getRequest(from: "\(apiVersion)/\(authorsEndpoint)", with: parameters, completion: completion)
+    }
+
+    func getPost(with slag: String, completion: @escaping (Result<PostResponse, Error>) -> Void) {
+        getRequest(from: "\(apiVersion)/\(postsEndpoint)/\(slag)", with: nil, completion: completion)
+    }
+
+    func getPosts(with parameters: [String: String]?, completion: @escaping (Result<PostsResponse, Error>) -> Void) {
+        getRequest(from: "\(apiVersion)/\(postsEndpoint)", with: parameters, completion: completion)
+    }
+
+    func getCategory(with slag: String, completion: @escaping (Result<CategoryResponse, Error>) -> Void) {
+        getRequest(from: "\(apiVersion)/\(categoryEndpoint)/\(slag)", with: nil, completion: completion)
+    }
+
+    func getTag(with slag: String, completion: @escaping (Result<TagResponse, Error>) -> Void) {
+        getRequest(from: "\(apiVersion)/\(tagsEndpoint)/\(slag)", with: nil, completion: completion)
+    }
+
+    func getTags(with parameters: [String: String]?, completion: @escaping (Result<TagsResponse, Error>) -> Void) {
+        getRequest(from: "\(apiVersion)/\(tagsEndpoint)", with: parameters, completion: completion)
+    }
+
+    private func getRequest<T: Decodable>(from endpoint: String, with parameters: [String: String]?,
+                                          completion: @escaping (Result<T, Error>) -> Void) {
         do {
-            var request = try prepareRequest(for: endpoint, with: ["auth_token": self.token])
+            var params = ["auth_token": self.token]
+            if let parameters = parameters {
+                params.merge(parameters){(_, new) in new }
+            }
+            var request = try prepareRequest(for: endpoint, with: params)
             request.httpMethod = "GET"
             let task = urlSession.dataTask(with: request) { data, response, error in
                 if let error = error {
@@ -86,13 +117,8 @@ public struct ButterCMSClient {
         components.scheme = scheme
         components.host = host
         components.path = endpoint
-        var urlQueryItems = [URLQueryItem]()
-        for (name, value) in parameters {
-            urlQueryItems.append(URLQueryItem(name: name, value: value))
-        }
-        components.queryItems = urlQueryItems
+        components.queryItems =  parameters.map { (key, value) -> URLQueryItem in URLQueryItem(name: key, value: String(value))}
         guard let url = components.url else { throw ButterCMSError(error: .wrongURLComponent("scheme: \(scheme), host: \(host), endpoint: \(endpoint)"))}
-
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         return request

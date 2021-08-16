@@ -1,157 +1,14 @@
 import XCTest
+import Foundation
+
 @testable import ButterCMSSDK
 
 @available(iOS 11.0, macOS 10.13, *)
 final class ButterCMSSDKTests: XCTestCase {
+        var urlSession: URLSession!
+        var uut: ButterCMSClient!
+
         let jsonDecoder = JSONDecoder()
-
-        let authors = """
-                {
-                    "data": [
-                        {
-                            "first_name": "Applifting",
-                            "last_name": "Sample",
-                            "email": "martin.srb@applifting.io",
-                            "slug": "applifting-sample",
-                            "bio": "My bio",
-                            "title": "Managing Partner, Solution Architect",
-                            "linkedin_url": "https://www.linkedin.com/in/martin-srb-applifting/",
-                            "facebook_url": "",
-                            "instagram_url": "",
-                            "pinterest_url": "",
-                            "twitter_handle": "",
-                            "profile_image": "",
-                            "recent_posts": [
-                                {
-                                    "created": "2021-07-19T12:24:21.986359Z",
-                                    "published": "2021-07-19T12:24:21.985221Z",
-                                    "url": "example-post",
-                                    "slug": "example-post",
-                                    "featured_image": "https://d2devwt40at1e2.cloudfront.net/api/file/tdt3s1OHRO6wfQOpmAHw",
-                                    "featured_image_alt": "",
-                                    "author": {
-                                        "first_name": "Applifting",
-                                        "last_name": "Sample",
-                                        "email": "martin.srb@applifting.io",
-                                        "slug": "applifting-sample",
-                                        "bio": "My bio",
-                                        "title": "Managing Partner, Solution Architect",
-                                        "linkedin_url": "https://www.linkedin.com/in/martin-srb-applifting/",
-                                        "facebook_url": "",
-                                        "instagram_url": "",
-                                        "pinterest_url": "",
-                                        "twitter_handle": "",
-                                        "profile_image": ""
-                                    },
-                                    "tags": [
-                                        {
-                                            "name": "Example Tag",
-                                            "slug": "example-tag"
-                                        }
-                                    ],
-                                    "categories": [
-                                        {
-                                            "name": "Example Category",
-                                            "slug": "example-category"
-                                        }
-                                    ],
-                                    "title": "Example Post",
-                                    "body": "Body",
-                                    "summary": "This is an example blog post. Pretty neat huh?",
-                                    "updated": "2021-07-19T12:24:22.072388Z",
-                                    "seo_title": "Example Post SEO Optimized Title",
-                                    "meta_description": "This is our example blog posts SEO optimized meta description.",
-                                    "status": "published"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            """
-
-        let posts = """
-            {
-                "meta": {
-                    "next_page": null,
-                    "previous_page": null,
-                    "count": 2
-                },
-                "data": [
-                    {
-                        "status": "published",
-                        "created": "2021-08-04T20:30:54.234433Z",
-                        "updated": "2021-08-04T20:31:43.281417Z",
-                        "published": "2021-08-04T20:30:00.000000Z",
-                        "title": "Example 2",
-                        "slug": "example-2",
-                        "body": "Body",
-                        "summary": "example",
-                        "seo_title": "Example 2",
-                        "meta_description": "example",
-                        "featured_image_alt": "",
-                        "url": "example-2",
-                        "featured_image": "https://cdn.buttercms.com/y5Of36JES8YLTqTuP7ig",
-                        "author": {
-                            "bio": "My bio",
-                            "slug": "applifting-sample",
-                            "email": "martin.srb@applifting.io",
-                            "title": "Managing Partner, Solution Architect",
-                            "last_name": "Sample",
-                            "first_name": "Applifting",
-                            "facebook_url": "",
-                            "linkedin_url": "https://www.linkedin.com/in/martin-srb-applifting/",
-                            "instagram_url": "",
-                            "pinterest_url": "",
-                            "profile_image": "",
-                            "twitter_handle": ""
-                        },
-                        "tags": [],
-                        "categories": []
-                    },
-                    {
-                        "status": "published",
-                        "created": "2021-07-19T12:24:21.986359Z",
-                        "updated": "2021-07-19T12:24:22.072388Z",
-                        "published": "2021-07-19T12:24:21.985221Z",
-                        "title": "Example Post",
-                        "slug": "example-post",
-                        "body": "Body",
-                        "summary": "This is an example blog post. Pretty neat huh?",
-                        "seo_title": "Example Post SEO Optimized Title",
-                        "meta_description": "This is our example blog posts SEO optimized meta description.",
-                        "featured_image_alt": "",
-                        "url": "example-post",
-                        "featured_image": "https://d2devwt40at1e2.cloudfront.net/api/file/tdt3s1OHRO6wfQOpmAHw",
-                        "author": {
-                            "bio": "My bio",
-                            "slug": "applifting-sample",
-                            "email": "martin.srb@applifting.io",
-                            "title": "Managing Partner, Solution Architect",
-                            "last_name": "Sample",
-                            "first_name": "Applifting",
-                            "facebook_url": "",
-                            "linkedin_url": "https://www.linkedin.com/in/martin-srb-applifting/",
-                            "instagram_url": "",
-                            "pinterest_url": "",
-                            "profile_image": "",
-                            "twitter_handle": ""
-                        },
-                        "tags": [
-                            {
-                                "name": "Example Tag",
-                                "slug": "example-tag"
-                            }
-                        ],
-                        "categories": [
-                            {
-                                "name": "Example Category",
-                                "slug": "example-category"
-                            }
-                        ]
-                    }
-                ]
-            }
-        """
 
         override func setUpWithError() throws {
             jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -169,50 +26,175 @@ final class ButterCMSSDKTests: XCTestCase {
                                                            debugDescription: "Invalid date: " + string)
                 }
             }
-        }
-
-        func testAuthors() {
-
-            guard let data = authors.data(using: .utf8) else {
-                XCTFail("Can not execute test")
-                return
-            }
-            do {
-                try jsonDecoder.decode(AuthorsResponse.self, from: data)
-            } catch {
-                XCTFail(" Cannot decode Authors from json: \(error) ")
-            }
+            let configuration = URLSessionConfiguration.ephemeral
+                    configuration.protocolClasses = [MockURLProtocol.self]
+                    urlSession = URLSession(configuration: configuration)
+            uut = ButterCMSClient()
+            uut.urlSession = URLSession(configuration: configuration)
+            uut.token = "the token"
         }
 
         func testPost() {
-            guard let data = posts.data(using: .utf8) else {
-                XCTFail("Can not execute test")
-                return
+            let expectation = XCTestExpectation(description: "API expectation")
+            MockURLProtocol.requestHandler = { _ in
+            // Given mock data
+                guard let data = TestData.post.data(using: .utf8) else {
+                    throw MockURLProtocolError.canNotParse("Incorrect mock json data")
+                }
+                return ((HTTPURLResponse(), data))
             }
-            do {
-                try jsonDecoder.decode(PostsResponse.self, from: data)
-            } catch {
-                XCTFail(" Cannot decode Posts from json: \(error) ")
-            }
-        }
-
-        func testAuthorsCall() {
-            let expectation = XCTestExpectation(description: "Get Authors")
-            var butter = ButterCMSClient()
-            butter.token = "3606556ecbd4134ea24b8936a829ab9edaddb583"
-            butter.getAuthors { result in
+            // When
+            uut.getPost(with: "slag") { result in
                 switch result {
-                case .success(let authors):
-                    print(" --- Authors ----")
-                    print("\(authors.data.count)")
-                    for a in authors.data {
-                        print("\(a.firstName)")
-                    }
+                case .success(let object):
+            // Then
+                XCTAssertNotNil(object, "Received nil from getPost")
                 case .failure(let error):
-                    print("\(error)")
+                    XCTFail("getPost fialed with Error: \(error)")
                 }
                 expectation.fulfill()
             }
-            wait(for: [expectation], timeout: 10.0)
+            wait(for: [expectation], timeout: 1.0)
         }
+
+        func testPosts() {
+            let expectation = XCTestExpectation(description: "API expectation")
+            MockURLProtocol.requestHandler = { _ in
+            // Given mock data
+                guard let data = TestData.posts.data(using: .utf8) else {
+                    throw MockURLProtocolError.canNotParse("Incorrect mock json data")
+                }
+                return ((HTTPURLResponse(), data))
+            }
+            // When
+            uut.getPosts(with: nil) { result in
+                switch result {
+                case .success(let object):
+            // Then
+                XCTAssertNotNil(object, "Received nil from getPosts")
+                XCTAssertTrue(object.data.count > 0, "Receved no posts")
+                case .failure(let error):
+                    XCTFail("getPosts fialed with Error: \(error)")
+                }
+                expectation.fulfill()
+            }
+            wait(for: [expectation], timeout: 1.0)
+        }
+
+    func testAuthor() {
+        let expectation = XCTestExpectation(description: "API expectation")
+        MockURLProtocol.requestHandler = { _ in
+        // Given mock data
+            guard let data = TestData.author.data(using: .utf8) else {
+                throw MockURLProtocolError.canNotParse("Incorrect mock json data")
+            }
+            return ((HTTPURLResponse(), data))
+        }
+        // When
+        uut.getAuthor(with: "slag") { result in
+            switch result {
+            case .success(let object):
+        // Then
+            XCTAssertNotNil(object, "Received nil from getAuthor")
+            case .failure(let error):
+                XCTFail("getAuthor fialed with Error: \(error)")
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+
+    func testAuthors() {
+        let expectation = XCTestExpectation(description: "API expectation")
+        MockURLProtocol.requestHandler = { _ in
+        // Given mock data
+            guard let data = TestData.authors.data(using: .utf8) else {
+                throw MockURLProtocolError.canNotParse("Incorrect mock json data")
+            }
+            return ((HTTPURLResponse(), data))
+        }
+        // When
+        uut.getAuthors(with: nil) { result in
+            switch result {
+            case .success(let objects):
+        // Then
+            XCTAssertNotNil(objects, "Received nil from getAuthors")
+                XCTAssertTrue(objects.data.count > 0, "Receved no authors")
+            case .failure(let error):
+                XCTFail("getAuthors fialed with Error: \(error)")
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+
+    func testCategory() {
+        let expectation = XCTestExpectation(description: "API expectation")
+        // Given mock data
+        MockURLProtocol.requestHandler = { _ in
+            guard let data = TestData.category.data(using: .utf8) else {
+                throw MockURLProtocolError.canNotParse("Incorrect mock json data")
+            }
+            return ((HTTPURLResponse(), data))
+        }
+        // When
+        uut.getCategory(with: "slag") { result in
+            switch result {
+            case .success(let object):
+        // Then
+            XCTAssertNotNil(object, "Received nil from getCategory")
+            case .failure(let error):
+                XCTFail("getCategory fialed with Error: \(error)")
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+
+    func testTag() {
+        let expectation = XCTestExpectation(description: "API expectation")
+        // Given mock data
+        MockURLProtocol.requestHandler = { _ in
+            guard let data = TestData.tag.data(using: .utf8) else {
+                throw MockURLProtocolError.canNotParse("Incorrect mock json data")
+            }
+            return ((HTTPURLResponse(), data))
+        }
+        // When
+        uut.getTag(with: "slag") { result in
+            switch result {
+            case .success(let object):
+        // Then
+            XCTAssertNotNil(object, "Received nil from getTag")
+            case .failure(let error):
+                XCTFail("getCategory fialed with Error: \(error)")
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+
+    func testTags() {
+        let expectation = XCTestExpectation(description: "API expectation")
+        MockURLProtocol.requestHandler = { _ in
+        // Given mock data
+            guard let data = TestData.tags.data(using: .utf8) else {
+                throw MockURLProtocolError.canNotParse("Incorrect mock json data")
+            }
+            return ((HTTPURLResponse(), data))
+        }
+        // When
+        uut.getTags(with: nil) { result in
+            switch result {
+            case .success(let objects):
+        // Then
+            XCTAssertNotNil(objects, "Received nil from getTags")
+                XCTAssertTrue(objects.data.count > 0, "Receved no authors")
+            case .failure(let error):
+                XCTFail("getTags fialed with Error: \(error)")
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
 }

@@ -23,6 +23,10 @@ public struct Author: Codable {
     var recentPosts: [Post]?
 }
 
+public struct AuthorResponse: Codable {
+    var data: Author
+}
+
 public struct AuthorsResponse: Codable {
     var data: [Author]
 }
