@@ -1,6 +1,6 @@
 //
 //  PaginationMeta.swift
-//  
+//  ButterCMSSDK
 //
 //  Created by Martin Srb on 16.08.2021.
 //

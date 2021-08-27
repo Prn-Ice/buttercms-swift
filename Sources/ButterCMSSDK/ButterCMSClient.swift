@@ -6,82 +6,92 @@
 //
 
 import Foundation
-@available(iOS 11.0, macOS 10.13, *)
+@available(iOS 11.0, macOS 10.13, tvOS 11.0, watchOS 4.0, *)
 public struct ButterCMSClient {
-
-    var scheme = "https"
-    var host = "api.buttercms.com"
-    var authorsEndpoint = "/authors"
-    var categoryEndpoint = "/categories"
-    var pagesEndpoint = "/pages"
-    var postsEndpoint = "/posts"
-    var tagsEndpoint = "/tags"
-    var contentEndpoint = "/content"
-    var rssEndpoint = "/feeds/rss"
-    var atomEndpoint = "/feeds/atom"
-    var siteMapEndpoint = "/feeds/sitemap"
-    var apiVersion = "/v2"
-    var token = ""
-    var urlSession = URLSession.shared
-    private var jsonDecoder: JSONDecoder = {
-        let jsonDecoder = JSONDecoder()
+    
+    let apiKey: String
+    let urlSession: URLSession
+    private var jsonDecoder = JSONDecoder()
+    
+    public init(apiKey: String, urlSession: URLSession = .shared) {
+        self.apiKey = apiKey
+        self.urlSession = urlSession
         jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
         jsonDecoder.dateDecodingStrategy = .custom { decoder in
             let container = try decoder.singleValueContainer()
             let string = try container.decode(String.self)
-            var date = DateFormatter.iso8601withFractionalSeconds.date(from: string)
-            if let d = date {
-                return d
+            if let date = DateFormatter.iso8601withFractionalSeconds.date(from: string) ??
+                DateFormatter.iso8601.date(from: string) {
+                return date
             } else {
-                date = DateFormatter.iso8601.date(from: string)
-                if let d = date {
-                    return d
-                } else {
-                    throw DecodingError.dataCorruptedError(in: container,
-                                                               debugDescription: "Invalid date: " + string)
-                }
+                throw DecodingError.dataCorruptedError( in: container, debugDescription: "Invalid date: " + string)
             }
         }
-        return jsonDecoder
-    }()
-
-    func getAuthor(with slag: String, completion: @escaping (Result<AuthorResponse, Error>) -> Void) {
-        getRequest(from: "\(apiVersion)/\(authorsEndpoint)/\(slag)", with: nil, completion: completion)
+    }
+    
+    public func getAuthor(slug: String, parameters: [AuthorParameters] = [], completion: @escaping (Result<AuthorResponse, Error>) -> Void) {
+        let endpoint = Authors.get(slug: slug, apiKey: apiKey, parameters: parameters)
+        processRequest(endpoint: endpoint, completion: completion)
+    }
+    
+    public func getAuthors(parameters: [AuthorParameters] = [], completion: @escaping (Result<AuthorsResponse, Error>) -> Void) {
+        let endpoint = Authors.all(apiKey: apiKey, parameters: parameters)
+        processRequest(endpoint: endpoint, completion: completion)
+    }
+    
+    public func getPost(slug: String, completion: @escaping (Result<PostResponse, Error>) -> Void) {
+        let endpoint = Posts.get(slug: slug, apiKey: apiKey)
+        processRequest(endpoint: endpoint, completion: completion)
+    }
+    
+    public func getPosts(parameters: [PostsParameters] = [], completion: @escaping (Result<PostsResponse, Error>) -> Void) {
+        let endpoint = Posts.all(apiKey: apiKey, parameters: parameters)
+        processRequest(endpoint: endpoint, completion: completion)
+    }
+    
+    public func searchPosts(parameters: [PostSearchParameters] = [], completion: @escaping (Result<PostsResponse, Error>) -> Void) {
+        let endpoint = Posts.search(apiKey: apiKey, parameters: parameters)
+        processRequest(endpoint: endpoint, completion: completion)
     }
 
-    func getAuthors(with parameters: [String: String]?, completion: @escaping (Result<AuthorsResponse, Error>) -> Void) {
-        getRequest(from: "\(apiVersion)/\(authorsEndpoint)", with: parameters, completion: completion)
+    public func getCategory(slug: String, parameters: [CategoryParameters] = [], completion: @escaping (Result<CategoryResponse, Error>) -> Void) {
+        let endpoint = Categories.get(slug: slug, apiKey: apiKey, parameters: parameters)
+        processRequest(endpoint: endpoint, completion: completion)
+    }
+    
+    public func getCategories(parameters: [CategoryParameters] = [], completion: @escaping (Result<CategoryResponse, Error>) -> Void) {
+        let endpoint = Categories.all(apiKey: apiKey, parameters: parameters)
+        processRequest(endpoint: endpoint, completion: completion)
+    }
+    
+    public func getTag(slug: String, parameters: [TagParameters] = [], completion: @escaping (Result<TagResponse, Error>) -> Void) {
+        let endpoint = Tags.get(slug: slug, apiKey: apiKey, parameters: parameters)
+        processRequest(endpoint: endpoint, completion: completion)
+    }
+    
+    public func getTags(parameters: [TagParameters] = [], completion: @escaping (Result<TagsResponse, Error>) -> Void) {
+        let endpoint = Tags.all(apiKey: apiKey, parameters: parameters)
+        processRequest(endpoint: endpoint, completion: completion)
     }
 
-    func getPost(with slag: String, completion: @escaping (Result<PostResponse, Error>) -> Void) {
-        getRequest(from: "\(apiVersion)/\(postsEndpoint)/\(slag)", with: nil, completion: completion)
+    public func getPage<T: Decodable>(slug: String, parameters: [PageParameters] = [], pageTypeSlug: String, type: T.Type, completion: @escaping (Result<PageResponse<T>, Error>) -> Void) {
+        let endpoint = Pages.get(pageType: pageTypeSlug, slug: slug, apiKey: apiKey, parameters: parameters)
+        processRequest(endpoint: endpoint, completion: completion)
     }
-
-    func getPosts(with parameters: [String: String]?, completion: @escaping (Result<PostsResponse, Error>) -> Void) {
-        getRequest(from: "\(apiVersion)/\(postsEndpoint)", with: parameters, completion: completion)
+    
+    public func getPages<T: Decodable>(parameters: [PagesParameters] = [], pageTypeSlug: String, type: T.Type, completion: @escaping (Result<PagesResponse<T>, Error>) -> Void) {
+        let endpoint = Pages.all(pageType: pageTypeSlug, apiKey: apiKey, parameters: parameters)
+        processRequest(endpoint: endpoint, completion: completion)
     }
-
-    func getCategory(with slag: String, completion: @escaping (Result<CategoryResponse, Error>) -> Void) {
-        getRequest(from: "\(apiVersion)/\(categoryEndpoint)/\(slag)", with: nil, completion: completion)
+    
+    public func getCollection<T: Decodable>(slug: String, parameters: [CollectionParameters] = [], type: T.Type, completion: @escaping (Result<CollectionResponse<T>, Error>) -> Void) {
+        let endpoint = Collections.get(slug: slug, apiKey: apiKey, parameters: parameters)
+        processRequest(endpoint: endpoint, completion: completion)
     }
-
-    func getTag(with slag: String, completion: @escaping (Result<TagResponse, Error>) -> Void) {
-        getRequest(from: "\(apiVersion)/\(tagsEndpoint)/\(slag)", with: nil, completion: completion)
-    }
-
-    func getTags(with parameters: [String: String]?, completion: @escaping (Result<TagsResponse, Error>) -> Void) {
-        getRequest(from: "\(apiVersion)/\(tagsEndpoint)", with: parameters, completion: completion)
-    }
-
-    private func getRequest<T: Decodable>(from endpoint: String, with parameters: [String: String]?,
-                                          completion: @escaping (Result<T, Error>) -> Void) {
+    
+    private func processRequest<T: Decodable>(endpoint: URLRequestConvertible, completion: @escaping (Result<T, Error>) -> Void) {
         do {
-            var params = ["auth_token": self.token]
-            if let parameters = parameters {
-                params.merge(parameters){(_, new) in new }
-            }
-            var request = try prepareRequest(for: endpoint, with: params)
-            request.httpMethod = "GET"
+            let request = try endpoint.getURLRequest()
             let task = urlSession.dataTask(with: request) { data, response, error in
                 if let error = error {
                     completion(.failure(error))
@@ -111,19 +121,8 @@ public struct ButterCMSClient {
             completion(.failure(error))
         }
     }
+}
 
-    func prepareRequest(for endpoint: String, with parameters: [String: String]) throws -> URLRequest  {
-        var components = URLComponents()
-        components.scheme = scheme
-        components.host = host
-        components.path = endpoint
-        components.queryItems =  parameters.map { (key, value) -> URLQueryItem in URLQueryItem(name: key, value: String(value))}
-        guard let url = components.url else { throw ButterCMSError(error: .wrongURLComponent("scheme: \(scheme), host: \(host), endpoint: \(endpoint)"))}
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        return request
-    }
-
-    
-
+internal enum ButterConstats: String {
+    case SERVER_URL = "https://api.buttercms.com/v2"
 }
