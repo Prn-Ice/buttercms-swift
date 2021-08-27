@@ -7,20 +7,20 @@
 
 import Foundation
 public struct Post: Codable {
-    var status: Status
-    var created: Date
-    var updated: Date
-    var published: Date
+    var status: Status?
+    var created: Date?
+    var updated: Date?
+    var published: Date?
     var title: String
     var slug: String
-    var body: String
-    var summary: String
-    var seoTitle: String
-    var metaDescription: String
-    var featuredImage: String
-    var featuredImageAlt: String
-    var url: String
-    var author: Author
+    var body: String?
+    var summary: String?
+    var seoTitle: String?
+    var metaDescription: String?
+    var featuredImage: String?
+    var featuredImageAlt: String?
+    var url: String?
+    var author: Author?
     var tags: [Tag]?
     var categories: [Category]?
 }

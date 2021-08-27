@@ -7,6 +7,76 @@
 
 import Foundation
 struct TestData {
+
+    static let apiKey = "apiKey"
+
+    static let authorUrl = "https://api.buttercms.com/v2/authors/martin-srb?"
+                         + "include=recent_posts&"
+                         + "auth_token=" + apiKey
+
+    static let authorsUrl = "https://api.buttercms.com/v2/authors?"
+                         + "include=recent_posts&"
+                         + "auth_token=" + apiKey
+
+    static let postUrl = "https://api.buttercms.com/v2/posts/the-post?"
+                       + "auth_token=" + apiKey
+
+    static let postsUrl = "https://api.buttercms.com/v2/posts?"
+                        + "page=1&"
+                        + "page_size=10&"
+                        + "exclude_body=true&"
+                        + "author_slug=authorSlug&"
+                        + "category_slug=categorySlug&"
+                        + "tag_slug=tagSlug&"
+                        + "auth_token=" + apiKey
+
+    static let postsSearchUrl = "https://api.buttercms.com/v2/search?"
+                              + "query=query&"
+                              + "page=1&"
+                              + "page_size=10&"
+                              + "auth_token=" + apiKey
+
+    static let categoryUrl = "https://api.buttercms.com/v2/categories/category?"
+                         + "include=recent_posts&"
+                         + "auth_token=" + apiKey
+
+    static let categoriesUrl = "https://api.buttercms.com/v2/categories?"
+                         + "include=recent_posts&"
+                         + "auth_token=" + apiKey
+
+    static let tagUrl = "https://api.buttercms.com/v2/tags/tag?"
+                         + "include=recent_posts&"
+                         + "auth_token=" + apiKey
+
+    static let tagsUrl = "https://api.buttercms.com/v2/tags?"
+                         + "include=recent_posts&"
+                         + "auth_token=" + apiKey
+
+    static let pageUrl = "https://api.buttercms.com/v2/pages/pageType/page?"
+                         + "locale=en&"
+                         + "preview=1&"
+                         + "levels=1&"
+                         + "auth_token=" + apiKey
+
+    static let pagesUrl = "https://api.buttercms.com/v2/pages/pageType?" 
+                         + "locale=en&"
+                         + "page=1&"
+                         + "page_size=10&"
+                         + "preview=1&"
+                         + "levels=1&"
+                         + "auth_token=" + apiKey
+
+    static let collectionsUrl = "https://api.buttercms.com/v2/content/coll1?"
+                        + "keys=key1,key2,key3&"
+                        + "test=1&"
+                        + "fields.field=value&"
+                        + "order=-field&"
+                        + "locale=en&"
+                        + "page=1&"
+                        + "page_size=10&"
+                        + "levels=1&"
+                        + "auth_token=" + apiKey
+
     static let author = """
         {
             "data": {
@@ -473,5 +543,79 @@ struct TestData {
             }
         ]
     }
+    """
+
+    static let page = """
+        {
+            "data": {
+                "slug": "test-slug",
+                "name": "Test",
+                "published": "2021-08-16T19:03:00.603407Z",
+                "updated": "2021-08-16T19:03:00.603407Z",
+                "page_type": "testpagetype",
+                "fields": {
+                    "name": "Name field content"
+                }
+            }
+        }
+    """
+
+    static let pages = """
+     {
+        "meta": {
+            "next_page": null,
+            "previous_page": null,
+            "count": 2
+        },
+        "data": [
+            {
+                "slug": "test2-slug",
+                "name": "Test2",
+                "published": "2021-08-17T11:33:56.366994Z",
+                "updated": "2021-08-17T11:33:56.366994Z",
+                "page_type": "testpagetype",
+                "fields": {
+                    "name": "NAME OF THE GAME"
+                }
+            },
+            {
+                "slug": "test-slug",
+                "name": "Test",
+                "published": "2021-08-16T19:03:00.603407Z",
+                "updated": "2021-08-17T11:27:44.135478Z",
+                "page_type": "testpagetype",
+                "fields": {
+                    "name": "Name field content"
+                }
+            }
+        ]
+    }
+    """
+    static var collection =  """
+     {
+         "meta": {
+             "count": 2,
+             "next_page": null,
+             "previous_page": null
+         },
+         "data": {
+             "faq": [
+                 {
+                     "meta": {
+                         "id": 143274
+                     },
+                     "question": "Can I Add Custom Fields to Blog Posts?",
+                     "answer": "Need custom fields for your blog posts? Try Page Types to build a custom blog engine."
+                 },
+                 {
+                     "meta": {
+                         "id": 143273
+                     },
+                     "question": "Does Butter Provide Themes and Templates?",
+                     "answer": "We do not provide templates or themes. We're SaaS so we host and maintain the CMS API and Dashboard. You query our Content API to pull content into your app. So we host and maintain the data, and you define your own custom content models within Butter."
+                 }
+             ]
+         }
+     }
     """
 }
