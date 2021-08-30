@@ -12,7 +12,7 @@ butter.getTag(slug: "example-tag") { result in
         print("Tag: \(tag.data.name)")
         print(" --------------- ")
     case .failure(let error):
-        print("getTag fialed with Error: \(error)")
+        print("getTag failed with Error: \(error)")
     }
 }
 
@@ -23,7 +23,7 @@ butter.getTags(parameters: []) { result in
         tags.data.compactMap() { print("Tag: \($0.slug)") }
         print(" --------------- ")
     case .failure(let error):
-        print("getTags fialed with Error: \(error)")
+        print("getTags failed with Error: \(error)")
     }
 }
 
@@ -40,7 +40,7 @@ butter.getPosts(parameters: [
         posts.data.compactMap() { print("Post: \($0.title)") }
         print(" --------------- ")
     case .failure(let error):
-        print("getPost fialed with Error: \(error)")
+        print("getPost failed with Error: \(error)")
     }
 }
 
@@ -52,7 +52,7 @@ butter.searchPosts(parameters: [.query(value: "Butter")]) { result in
         posts.data.compactMap() { print("Post: \($0.title)") }
         print(" --------------- ")
     case .failure(let error):
-        print("searchPosts fialed with Error: \(error)")
+        print("searchPosts failed with Error: \(error)")
     }
 }
 
@@ -63,7 +63,7 @@ butter.getPost(slug: "example-post") { result in
         print("Post: \(post.data.title)")
         print(" --------------- ")
     case .failure(let error):
-        print("getPost fialed with Error: \(error)")
+        print("getPost failed with Error: \(error)")
     }
 }
 
@@ -74,7 +74,7 @@ butter.getAuthor(slug: "applifting-sample") { result in
         print("Author: \(author.data.slug)")
         print(" --------------- ")
     case .failure(let error):
-        print("getAuthor fialed with Error: \(error)")
+        print("getAuthor failed with Error: \(error)")
     }
 }
 
@@ -85,7 +85,7 @@ butter.getAuthors(parameters: [.include]) { result in
         authors.data.compactMap() { print("Author: \($0.slug)") }
         print(" --------------- ")
     case .failure(let error):
-        print("getAuthor fialed with Error: \(error)")
+        print("getAuthor failed with Error: \(error)")
     }
 }
 
@@ -96,7 +96,7 @@ butter.getCategory(slug: "example-category", parameters: [.include]) { result in
         print("Category: \(category.data.slug)")
         print(" --------------- ")
     case .failure(let error):
-        print("getCategory fialed with Error: \(error)")
+        print("getCategory failed with Error: \(error)")
     }
 }
 
@@ -107,7 +107,7 @@ butter.getCategories(parameters: [.include]) { result in
         categories.data.compactMap() { print("Categories: \($0.slug)") }
         print(" --------------- ")
     case .failure(let error):
-        print("getCategories fialed with Error: \(error)")
+        print("getCategories failed with Error: \(error)")
     }
 }
 
@@ -124,7 +124,7 @@ butter.getCollection(slug: "faq", parameters: [.locale(value: "en")], type: FaqI
         collection.data.items.compactMap() { print("Question: \($0.answer)")}
         print(" --------------- ")
     case .failure(let error):
-        print("getCollection fialed with Error: \(error)")
+        print("getCollection failed with Error: \(error)")
     }
 }
 
@@ -139,7 +139,7 @@ butter.getPage(slug: "test-slug", parameters: [.locale(value: "en")], pageTypeSl
         print("Page: \(page.data.fields.name)")
         print(" --------------- ")
     case .failure(let error):
-        print("getPage fialed with Error: \(error)")
+        print("getPage failed with Error: \(error)")
     }
 }
 
@@ -150,6 +150,6 @@ butter.getPages(parameters: [.locale(value: "en")], pageTypeSlug: "testpagetype"
         pages.data.compactMap() { print("Page: \($0.fields.name)") }
         print(" --------------- ")
     case .failure(let error):
-        print("getPages fialed with Error: \(error)")
+        print("getPages failed with Error: \(error)")
     }
 }
