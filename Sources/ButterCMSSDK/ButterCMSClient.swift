@@ -59,7 +59,7 @@ public struct ButterCMSClient {
         processRequest(endpoint: endpoint, completion: completion)
     }
     
-    public func getCategories(parameters: [CategoryParameters] = [], completion: @escaping (Result<CategoryResponse, Error>) -> Void) {
+    public func getCategories(parameters: [CategoryParameters] = [], completion: @escaping (Result<CategoriesResponse, Error>) -> Void) {
         let endpoint = Categories.all(apiKey: apiKey, parameters: parameters)
         processRequest(endpoint: endpoint, completion: completion)
     }

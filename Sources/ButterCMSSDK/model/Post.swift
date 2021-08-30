@@ -7,46 +7,46 @@
 
 import Foundation
 public struct Post: Codable {
-    var status: Status?
-    var created: Date?
-    var updated: Date?
-    var published: Date?
-    var title: String
-    var slug: String
-    var body: String?
-    var summary: String?
-    var seoTitle: String?
-    var metaDescription: String?
-    var featuredImage: String?
-    var featuredImageAlt: String?
-    var url: String?
-    var author: Author?
-    var tags: [Tag]?
-    var categories: [Category]?
+    public var status: Status?
+    public var created: Date?
+    public var updated: Date?
+    public var published: Date?
+    public var title: String
+    public var slug: String
+    public var body: String?
+    public var summary: String?
+    public var seoTitle: String?
+    public var metaDescription: String?
+    public var featuredImage: String?
+    public var featuredImageAlt: String?
+    public var url: String?
+    public var author: Author?
+    public var tags: [Tag]?
+    public var categories: [Category]?
 }
 
 public struct PostMeta: Codable {
-    var previousPost: PostSummary?
-    var nextPost: PostSummary?
+    public var previousPost: PostSummary?
+    public var nextPost: PostSummary?
 }
 
 public struct PostSummary: Codable {
-    var slug: String
-    var title: String
-    var featuredImage: String
+    public var slug: String
+    public var title: String
+    public var featuredImage: String?
 }
 
 public enum Status: String, Codable {
-    case DRAFT = "default"
+    case DRAFT = "draft"
     case PUBLISHED = "published"
 }
 
 public struct PostResponse: Codable {
-    var meta: PostMeta
-    var data: Post
+    public var meta: PostMeta
+    public var data: Post
 }
 
 public struct PostsResponse: Codable {
-    var meta: PaginationMeta
-    var data: [Post]
+    public var meta: PaginationMeta
+    public var data: [Post]
 }

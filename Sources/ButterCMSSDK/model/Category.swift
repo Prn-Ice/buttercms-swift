@@ -7,11 +7,15 @@
 
 import Foundation
 public struct Category: Codable {
-    var slug: String
-    var name: String
-    var recentPosts: [Post]?
+    public var slug: String
+    public var name: String
+    public var recentPosts: [Post]?
 }
 
 public struct CategoryResponse: Codable {
-    var data: Category
+    public var data: Category
+}
+
+public struct CategoriesResponse: Codable {
+    public var data: [Category]
 }

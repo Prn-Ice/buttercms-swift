@@ -7,7 +7,7 @@
 
 import Foundation
 public struct PaginationMeta: Codable {
-    var count: Int
-    var previousPage: Int?
-    var nextPage: Int?
+    public var count: Int
+    public var previousPage: Int?
+    public var nextPage: Int?
 }
