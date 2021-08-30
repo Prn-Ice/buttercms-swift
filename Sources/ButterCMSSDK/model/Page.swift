@@ -7,19 +7,19 @@
 
 import Foundation
 public struct Page<T:Codable>: Codable {
-    var slug: String
-    var name: String
-    var published: Date?
-    var updated: Date?
-    var pageType: String?
-    var fields: T
+    public var slug: String
+    public var name: String
+    public var published: Date?
+    public var updated: Date?
+    public var pageType: String?
+    public var fields: T
 }
 
 public struct PageResponse<T:Codable>: Codable {
-    var data: Page<T>
+    public var data: Page<T>
 }
 
 public struct PagesResponse<T:Codable>: Codable {
-    var meta: PaginationMeta
-    var data: [Page<T>]
+    public var meta: PaginationMeta
+    public var data: [Page<T>]
 }

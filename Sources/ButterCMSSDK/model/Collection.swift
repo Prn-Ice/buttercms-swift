@@ -6,8 +6,8 @@
 //
 
 import Foundation
-public class Collection<Item: CollectionItem>: Codable {
-    var items: [Item]
+public class Collection<Item: CollectionItem>: Decodable {
+    public var items: [Item]
 
     private struct DynamicCodingKeys: CodingKey {
         var stringValue: String
@@ -31,15 +31,15 @@ public class Collection<Item: CollectionItem>: Codable {
     }
 }
 
-public protocol CollectionItem: Codable {
+public protocol CollectionItem: Decodable {
     var meta: CollectionItemMeta { get set }
 }
 
-public struct CollectionItemMeta: Codable {
-    var id: Int
+public struct CollectionItemMeta: Decodable {
+    public var id: Int
 }
 
-public struct CollectionResponse<Item: CollectionItem>: Codable {
-    var data: Collection<Item>
-    var meta: PaginationMeta
+public struct CollectionResponse<Item: CollectionItem>: Decodable {
+    public var data: Collection<Item>
+    public var meta: PaginationMeta
 }

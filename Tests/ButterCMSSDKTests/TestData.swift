@@ -332,6 +332,118 @@ struct TestData {
         }
         """
 
+    static let posts2 = """
+        {
+            "meta": {
+                "next_page": null,
+                "previous_page": null,
+                "count": 3
+            },
+            "data": [
+                {
+                    "status": "draft",
+                    "created": "2021-08-23T08:01:11.574238Z",
+                    "updated": "2021-08-23T08:01:11.672327Z",
+                    "published": "2021-08-23T08:01:00Z",
+                    "title": "TEST",
+                    "slug": "test",
+                    "summary": "",
+                    "seo_title": "TEST",
+                    "meta_description": "",
+                    "featured_image_alt": "",
+                    "url": "test",
+                    "featured_image": null,
+                    "author": {
+                        "bio": "My bio",
+                        "slug": "applifting-sample",
+                        "email": "martin.srb@applifting.io",
+                        "title": "Managing Partner, Solution Architect",
+                        "last_name": "Sample",
+                        "first_name": "Applifting",
+                        "facebook_url": "",
+                        "linkedin_url": "https://www.linkedin.com/in/martin-srb-applifting/",
+                        "instagram_url": "",
+                        "pinterest_url": "",
+                        "profile_image": "",
+                        "twitter_handle": ""
+                    },
+                    "tags": [],
+                    "categories": []
+                },
+                {
+                    "status": "published",
+                    "created": "2021-08-04T20:30:54.234433Z",
+                    "updated": "2021-08-17T20:02:25.646103Z",
+                    "published": "2021-08-04T20:30:00Z",
+                    "title": "Another example post",
+                    "slug": "example-2",
+                    "summary": "example",
+                    "seo_title": "Example 2",
+                    "meta_description": "example",
+                    "featured_image_alt": "",
+                    "url": "example-2",
+                    "featured_image": "https://d2wzhk7xhrnk1x.cloudfront.net/f9Sen4QQcyVHSDZzI75w_butter-blog-post.jpg",
+                    "author": {
+                        "bio": "My bio",
+                        "slug": "applifting-sample",
+                        "email": "martin.srb@applifting.io",
+                        "title": "Managing Partner, Solution Architect",
+                        "last_name": "Sample",
+                        "first_name": "Applifting",
+                        "facebook_url": "",
+                        "linkedin_url": "https://www.linkedin.com/in/martin-srb-applifting/",
+                        "instagram_url": "",
+                        "pinterest_url": "",
+                        "profile_image": "",
+                        "twitter_handle": ""
+                    },
+                    "tags": [],
+                    "categories": []
+                },
+                {
+                    "status": "published",
+                    "created": "2021-07-19T12:24:21.986359Z",
+                    "updated": "2021-08-12T11:32:05.292096Z",
+                    "published": "2021-07-19T12:24:00Z",
+                    "title": "Example Post",
+                    "slug": "example-post",
+                    "summary": "This is an example blog post. Pretty neat huh?",
+                    "seo_title": "Example Post SEO Optimized Title",
+                    "meta_description": "This is our example blog posts SEO optimized meta description.",
+                    "featured_image_alt": "",
+                    "url": "example-post",
+                    "featured_image": "https://d2devwt40at1e2.cloudfront.net/api/file/tdt3s1OHRO6wfQOpmAHw",
+                    "author": {
+                        "bio": "My bio",
+                        "slug": "applifting-sample",
+                        "email": "martin.srb@applifting.io",
+                        "title": "Managing Partner, Solution Architect",
+                        "last_name": "Sample",
+                        "first_name": "Applifting",
+                        "facebook_url": "",
+                        "linkedin_url": "https://www.linkedin.com/in/martin-srb-applifting/",
+                        "instagram_url": "",
+                        "pinterest_url": "",
+                        "profile_image": "",
+                        "twitter_handle": ""
+                    },
+                    "tags": [
+                        {
+                            "name": "Example Tag",
+                            "slug": "example-tag"
+                        }
+                    ],
+                    "categories": [
+                        {
+                            "name": "Example Category",
+                            "slug": "example-category"
+                        }
+                    ]
+                }
+            ]
+        }
+        """
+
     static let category = """
         {
             "data":

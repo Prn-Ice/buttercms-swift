@@ -7,26 +7,26 @@
 
 import Foundation
 public struct Author: Codable {
-    var slug: String
-    var firstName: String?
-    var lastName: String?
-    var email: String?
-    var bio: String?
-    var title: String?
-    var linkedinUrl: String?
-    var facebookUrl: String?
-    var pinterestUrl: String?
-    var instagramUrl: String?
-    var twitterHandle: String?
-    var profileImage: String?
+    public var slug: String
+    public var firstName: String?
+    public var lastName: String?
+    public var email: String?
+    public var bio: String?
+    public var title: String?
+    public var linkedinUrl: String?
+    public var facebookUrl: String?
+    public var pinterestUrl: String?
+    public var instagramUrl: String?
+    public var twitterHandle: String?
+    public var profileImage: String?
     // With query include=recent_posts:
-    var recentPosts: [Post]?
+    public var recentPosts: [Post]?
 }
 
 public struct AuthorResponse: Codable {
-    var data: Author
+    public var data: Author
 }
 
 public struct AuthorsResponse: Codable {
-    var data: [Author]
+    public var data: [Author]
 }

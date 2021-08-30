@@ -7,15 +7,15 @@
 
 import Foundation
 public struct Tag: Codable {
-    var slug: String
-    var name: String
-    var recentPosts: [Post]?
+    public var slug: String
+    public var name: String
+    public var recentPosts: [Post]?
 }
 
 public struct TagResponse: Codable {
-    var data: Tag
+    public var data: Tag
 }
 
 public struct TagsResponse: Codable {
-    var data: [Tag]
+    public var data: [Tag]
 }

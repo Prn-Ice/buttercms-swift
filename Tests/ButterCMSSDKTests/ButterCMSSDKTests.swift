@@ -200,7 +200,7 @@ final class ButterCMSSDKTests: XCTestCase {
         let expectation = XCTestExpectation(description: "API expectation")
         MockURLProtocol.requestHandler = { _ in
             // Given mock data
-            guard let data = TestData.posts.data(using: .utf8) else {
+            guard let data = TestData.posts2.data(using: .utf8) else {
                 throw MockURLProtocolError.canNotParse("Incorrect mock json data")
             }
             return ((HTTPURLResponse(), data))
@@ -312,6 +312,30 @@ final class ButterCMSSDKTests: XCTestCase {
         }
         wait(for: [expectation], timeout: 1.0)
     }
+
+    func testCategories() {
+        let expectation = XCTestExpectation(description: "API expectation")
+        // Given mock data
+        MockURLProtocol.requestHandler = { _ in
+            guard let data = TestData.categories.data(using: .utf8) else {
+                throw MockURLProtocolError.canNotParse("Incorrect mock json data")
+            }
+            return ((HTTPURLResponse(), data))
+        }
+        // When
+        uut.getCategories(parameters: [.include]) { result in
+            switch result {
+            case .success(let object):
+                // Then
+                XCTAssertNotNil(object, "Received nil from getCategory")
+            case .failure(let error):
+                XCTFail("getCategories fialed with Error: \(error)")
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+
 
     // MARK: Tags
 
