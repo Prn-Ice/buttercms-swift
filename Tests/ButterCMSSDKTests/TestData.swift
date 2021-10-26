@@ -663,7 +663,7 @@ struct TestData {
                 "slug": "test-slug",
                 "name": "Test",
                 "published": "2021-08-16T19:03:00.603407Z",
-                "updated": "2021-08-16T19:03:00.603407Z",
+                "updated": "2021-08-16T19:03:00",
                 "page_type": "testpagetype",
                 "fields": {
                     "name": "Name field content"

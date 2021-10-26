@@ -20,8 +20,11 @@ public struct ButterCMSClient {
         jsonDecoder.dateDecodingStrategy = .custom { decoder in
             let container = try decoder.singleValueContainer()
             let string = try container.decode(String.self)
-            if let date = DateFormatter.iso8601withFractionalSeconds.date(from: string) ??
-                DateFormatter.iso8601.date(from: string) {
+            if let date = DateFormatter.iso8601withFractionalSeconds.date(from: string) {
+                return date
+            } else if let date = DateFormatter.iso8601.date(from: string) {
+                return date
+            } else if let date = DateFormatter.iso8601DateTime.date(from: string) {
                 return date
             } else {
                 throw DecodingError.dataCorruptedError( in: container, debugDescription: "Invalid date: " + string)
