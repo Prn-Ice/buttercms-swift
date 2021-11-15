@@ -154,4 +154,9 @@ butter.getCollection(slug: "faq", type: FaqItem.self) { result in
 }
 ```
 
+## iOS Sample application
+ Here you can download sample application:
+ https://github.com/ButterCMS/buttercms-ios.git 
+ git@github.com:ButterCMS/buttercms-ios.git
+ 
 
