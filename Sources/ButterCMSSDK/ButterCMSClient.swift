@@ -109,7 +109,7 @@ public struct ButterCMSClient {
                     return
                 }
                 guard (200...299).contains(response.statusCode) else {
-                    completion(.failure(ButterCMSError(error: .serverResponseNoOK(response.statusCode))))
+                    completion(.failure(ButterCMSError(error: .serverResponseNotOK(response.statusCode))))
                     return
                 }
                 do {

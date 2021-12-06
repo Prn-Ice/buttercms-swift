@@ -9,7 +9,7 @@ For a comprehensive list of examples, check out the [API documentation](https://
 
 ### Swift Package Manager: 
 1) open XCode->File->Swift Packages->Add Package Dependency
-2) provide this git https://github.com/ButterCMS/buttercms-swift.git and respective version e.g. 1.0.4
+2) provide this git https://github.com/ButterCMS/buttercms-swift.git and respective version e.g. 1.0.7
     
 ### CocoaPods
 1) Install CocoaPods if not installed already
@@ -29,7 +29,7 @@ $ open -a Xcode Podfile
 ```
 target 'YourAppName' do
   use_frameworks!
-pod 'ButterCMSSDK', '1.0.4'
+pod 'ButterCMSSDK', '1.0.7'
 end
 ```
 5) Install ButterCMS pod
@@ -155,7 +155,7 @@ butter.getCollection(slug: "faq", type: FaqItem.self) { result in
 ```
 
 ## iOS Sample application
- Here you can download sample application:
+ Here you can download the sample application:
  https://github.com/ButterCMS/buttercms-ios.git 
  git@github.com:ButterCMS/buttercms-ios.git
  

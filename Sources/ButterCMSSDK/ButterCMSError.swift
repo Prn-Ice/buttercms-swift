@@ -7,12 +7,12 @@
 
 import Foundation
 public struct ButterCMSError: Error {
-    enum Kind {
+public enum Kind {
         case canNotConstructUrl
-        case serverResponseNoOK(Int)
+        case serverResponseNotOK(Int)
         case responseNotHTTPURLResponse
         case noDataReturned
         case canNotDecodeData(Data)
     }
-    let error: Kind
+public  let error: Kind
 }
