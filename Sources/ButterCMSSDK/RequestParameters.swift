@@ -106,6 +106,8 @@ public enum PagesParameters: Parameters {
     case pageSize(value: Int)
     case locale(value: String)
     case levels(value: Int)
+    case order(value:String)
+    case fields(key: String, value: String)
     func getParam() -> (String, String) {
         switch self {
         case .preview: return ("preview", "1")
@@ -113,6 +115,8 @@ public enum PagesParameters: Parameters {
         case .pageSize(let value): return ("page_size", String(value))
         case .locale(let value): return ("locale", value)
         case .levels(let value): return ("levels", String(value))
+        case .order(let value): return("order", value)
+        case .fields(let key, let value): return ("fields." + key, value)
         }
     }
 }

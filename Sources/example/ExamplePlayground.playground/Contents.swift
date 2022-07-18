@@ -130,13 +130,14 @@ butter.getCollection(slug: "faq", parameters: [.locale(value: "en")], type: FaqI
 
 private struct PageFields: Codable {
     var name: String
+    var description: String
 }
 
 butter.getPage(slug: "test-slug", parameters: [.locale(value: "en")], pageTypeSlug: "testpagetype", type: PageFields.self) { result in
     switch result {
     case .success(let page):
         print(" --- getPage --- ")
-        print("Page: \(page.data.fields.name)")
+        print("Page: name=\(page.data.fields.name), description=\(page.data.fields.description)")
         print(" --------------- ")
     case .failure(let error):
         print("getPage failed with Error: \(error)")
@@ -147,9 +148,39 @@ butter.getPages(parameters: [.locale(value: "en")], pageTypeSlug: "testpagetype"
     switch result {
     case .success(let pages):
         print(" --- getPages --- ")
-        pages.data.compactMap() { print("Page: \($0.fields.name)") }
+        pages.data.compactMap() { print("Page: name=\($0.fields.name), descriptiomn=\($0.fields.description)")  }
         print(" --------------- ")
     case .failure(let error):
         print("getPages failed with Error: \(error)")
     }
 }
+
+
+private struct Hero: Codable {
+    var firstname: String
+    var lastname: String
+}
+
+private struct HeroePageFields: Codable {
+    var hero: Hero
+}
+
+butter.getPages(parameters: [
+                    .locale(value: "en"),
+                    .preview,
+                    .fields(key: "hero.firstname", value: "Barbar"),
+                    .fields(key: "hero.lastname", value: "Conan"),
+                    .levels(value: 1),
+                    .order(value: "updated")
+                    ], pageTypeSlug: "herotype", type: HeroePageFields.self) { result in
+    switch result {
+    case .success(let pages):
+        print(" --- getPages --- ")
+        pages.data.compactMap() { print("Page: First name=\($0.fields.hero.firstname), Last name=\($0.fields.hero.lastname)")  }
+        print(" --------------- ")
+    case .failure(let error):
+        print("getPages failed with Error: \(error)")
+    }
+}
+
+

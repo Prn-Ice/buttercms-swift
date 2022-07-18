@@ -64,6 +64,9 @@ struct TestData {
                          + "page_size=10&"
                          + "preview=1&"
                          + "levels=1&"
+                         + "order=published&"
+                         + "fields.hero.firstName=Barbar&"
+                         + "fields.hero.lastName=Conan&"
                          + "auth_token=" + apiKey
 
     static let collectionsUrl = "https://api.buttercms.com/v2/content/coll1?"

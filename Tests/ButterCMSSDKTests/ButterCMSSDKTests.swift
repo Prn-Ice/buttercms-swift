@@ -447,6 +447,9 @@ final class ButterCMSSDKTests: XCTestCase {
             .pageSize(value: 10),
             .levels(value: 1),
             .locale(value: "en"),
+            .order(value: "published"),
+            .fields(key: "hero.firstName", value: "Barbar"),
+            .fields(key: "hero.lastName", value: "Conan"),
             .preview]
 
         // When
