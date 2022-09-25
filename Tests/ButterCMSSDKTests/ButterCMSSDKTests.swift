@@ -29,22 +29,22 @@ final class ButterCMSSDKTests: XCTestCase {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [MockURLProtocol.self]
         urlSession = URLSession(configuration: configuration)
-        uut = ButterCMSClient(apiKey: "api key", urlSession: URLSession(configuration: configuration))
+        uut = ButterCMSClient(apiKey: TestData.apiKey, urlSession: URLSession(configuration: configuration))
     }
 
     // MARK: Authors
 
     func testAuthorUrl() throws {
         // Given
-        let params: [AuthorParameters] = [.include]
+        let params: [AuthorParameters] = [.include(value: "recent_posts")]
         let slug = "martin-srb"
 
         // When
         guard let expectedUrlComp = URLComponents(string: TestData.authorUrl),
-              let url = try ButterCMSClient.Authors.get(slug: slug, apiKey: TestData.apiKey, parameters: params).getURLRequest().url,
+              let url = try ButterCMSClient.Authors.get(slug: slug, config: uut, parameters: params).getURLRequest().url,
               let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
         else {
-            XCTFail("Wromng test data")
+            XCTFail("Wrong test data")
             return
         }
         // Then
@@ -53,13 +53,13 @@ final class ButterCMSSDKTests: XCTestCase {
 
     func testAuthorsUrl() throws {
         // Given
-        let params: [AuthorParameters] = [.include]
+        let params: [AuthorParameters] = [.include(value: "recent_posts")]
         // When
         guard let expectedUrlComp = URLComponents(string: TestData.authorsUrl),
-              let url = try ButterCMSClient.Authors.all(apiKey: TestData.apiKey, parameters: params).getURLRequest().url,
+              let url = try ButterCMSClient.Authors.all(config: uut, parameters: params).getURLRequest().url,
               let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
         else {
-            XCTFail("Wromng test data")
+            XCTFail("Wrong test data")
             return
         }
         // Then
@@ -76,7 +76,7 @@ final class ButterCMSSDKTests: XCTestCase {
             return ((HTTPURLResponse(), data))
         }
         // When
-        uut.getAuthor(slug: "slug", parameters: [.include]) { result in
+        uut.getAuthor(slug: "slug", parameters: [.include(value: "recent_posts")]) { result in
             switch result {
             case .success(let object):
                 // Then
@@ -100,7 +100,7 @@ final class ButterCMSSDKTests: XCTestCase {
             return ((HTTPURLResponse(), data))
         }
         // When
-        uut.getAuthors(parameters: [.include]) { result in
+        uut.getAuthors(parameters: [.include(value: "recent_posts")]) { result in
             switch result {
             case .success(let objects):
                 // Then
@@ -122,17 +122,17 @@ final class ButterCMSSDKTests: XCTestCase {
 
         // When
         guard let expectedUrlComp = URLComponents(string: TestData.postUrl),
-              let url = try ButterCMSClient.Posts.get(slug: slug, apiKey: TestData.apiKey).getURLRequest().url,
+              let url = try ButterCMSClient.Posts.get(slug: slug, config: uut).getURLRequest().url,
               let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
         else {
-            XCTFail("Wromng test data")
+            XCTFail("Wrong test data")
             return
         }
         // Then
         XCTAssertTrue(expectedUrlComp.isEqual(rhs: urlComp), "URL is not as expected")
     }
 
-    func testPostsUrl() throws {
+    func testAllPostsUrl() throws {
         // Given
         let params: [PostsParameters] = [
             .page(value: 1),
@@ -143,18 +143,65 @@ final class ButterCMSSDKTests: XCTestCase {
             .tagSlug(value: "tagSlug")]
 
         // When
-        guard let expectedUrlComp = URLComponents(string: TestData.postsUrl),
-              let url = try ButterCMSClient.Posts.all(apiKey: TestData.apiKey, parameters: params).getURLRequest().url,
+        guard let expectedUrlComp = URLComponents(string: TestData.allPostsUrl),
+              let url = try ButterCMSClient.Posts.all(config: uut, parameters: params).getURLRequest().url,
               let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
         else {
-            XCTFail("Wromng test data")
+            XCTFail("Wrong test data")
             return
         }
         // Then
         XCTAssertTrue(expectedUrlComp.isEqual(rhs: urlComp), "URL is not as expected")
     }
 
-    func testPostSearchUrl() throws {
+    func testAllPostsUrlWithDefaultPreviewTrue() throws {
+        // Given
+        let params: [PostsParameters] = [
+            .page(value: 1),
+            .pageSize(value: 10),
+            .excludeBody,
+            .authorSlug(value: "authorSlug"),
+            .categorySlug(value: "categorySlug"),
+            .tagSlug(value: "tagSlug")]
+
+        // When
+        uut.previewMode = true
+        guard let expectedUrlComp = URLComponents(string: TestData.allPostsUrlWithDefaultPreviewTrue),
+              let url = try ButterCMSClient.Posts.all(config: uut, parameters: params).getURLRequest().url,
+              let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        else {
+            XCTFail("Wrong test data")
+            return
+        }
+        // Then
+        XCTAssertTrue(expectedUrlComp.isEqual(rhs: urlComp), "URL is not as expected")
+    }
+
+    func testAllPostsUrlWithOverwritenDefaultPreviewTrue() throws {
+        // Given
+        let params: [PostsParameters] = [
+            .preview(value: 0),
+            .page(value: 1),
+            .pageSize(value: 10),
+            .excludeBody,
+            .authorSlug(value: "authorSlug"),
+            .categorySlug(value: "categorySlug"),
+            .tagSlug(value: "tagSlug")]
+
+        // When
+        uut.previewMode = true
+        guard let expectedUrlComp = URLComponents(string: TestData.allPostsUrlOverwritenWithDefaultPreviewTrue),
+              let url = try ButterCMSClient.Posts.all(config: uut, parameters: params).getURLRequest().url,
+              let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        else {
+            XCTFail("Wrong test data")
+            return
+        }
+        // Then
+        XCTAssertTrue(expectedUrlComp.isEqual(rhs: urlComp), "URL is not as expected")
+    }
+
+    func testSearchPostUrl() throws {
         // Given
         let params: [PostSearchParameters] = [
             .query(value: "query"),
@@ -163,10 +210,10 @@ final class ButterCMSSDKTests: XCTestCase {
 
         // When
         guard let expectedUrlComp = URLComponents(string: TestData.postsSearchUrl),
-              let url = try ButterCMSClient.Posts.search(apiKey: TestData.apiKey, parameters: params).getURLRequest().url,
+              let url = try ButterCMSClient.Posts.search(config: uut, parameters: params).getURLRequest().url,
               let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
         else {
-            XCTFail("Wromng test data")
+            XCTFail("Wrong test data")
             return
         }
         // Then
@@ -207,7 +254,7 @@ final class ButterCMSSDKTests: XCTestCase {
         }
         // When
         uut.getPosts(parameters:
-                        [   .preview,
+                        [   .preview(value: 1),
                             .page(value: 1),
                             .pageSize(value: 10),
                             .excludeBody,
@@ -260,15 +307,15 @@ final class ButterCMSSDKTests: XCTestCase {
 
     func testCategoryUrl() throws {
         // Given
-        let params: [CategoryParameters] = [.include]
+        let params: [CategoryParameters] = [.include(value: "recent_posts")]
         let slug = "category"
 
         // When
         guard let expectedUrlComp = URLComponents(string: TestData.categoryUrl),
-              let url = try ButterCMSClient.Categories.get(slug: slug, apiKey: TestData.apiKey, parameters: params).getURLRequest().url,
+              let url = try ButterCMSClient.Categories.get(slug: slug, config: uut, parameters: params).getURLRequest().url,
               let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
         else {
-            XCTFail("Wromng test data")
+            XCTFail("Wrong test data")
             return
         }
         // Then
@@ -277,13 +324,13 @@ final class ButterCMSSDKTests: XCTestCase {
 
     func testCategoriesUrl() throws {
         // Given
-        let params: [CategoryParameters] = [.include]
+        let params: [CategoryParameters] = [.include(value: "recent_posts")]
         // When
         guard let expectedUrlComp = URLComponents(string: TestData.categoriesUrl),
-              let url = try ButterCMSClient.Categories.all(apiKey: TestData.apiKey, parameters: params).getURLRequest().url,
+              let url = try ButterCMSClient.Categories.all(config: uut, parameters: params).getURLRequest().url,
               let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
         else {
-            XCTFail("Wromng test data")
+            XCTFail("Wrong test data")
             return
         }
         // Then
@@ -300,7 +347,7 @@ final class ButterCMSSDKTests: XCTestCase {
             return ((HTTPURLResponse(), data))
         }
         // When
-        uut.getCategory(slug: "slug", parameters: [.include]) { result in
+        uut.getCategory(slug: "slug", parameters: [.include(value: "recent_posts")]) { result in
             switch result {
             case .success(let object):
                 // Then
@@ -323,7 +370,7 @@ final class ButterCMSSDKTests: XCTestCase {
             return ((HTTPURLResponse(), data))
         }
         // When
-        uut.getCategories(parameters: [.include]) { result in
+        uut.getCategories(parameters: [.include(value: "recent_posts")]) { result in
             switch result {
             case .success(let object):
                 // Then
@@ -341,15 +388,15 @@ final class ButterCMSSDKTests: XCTestCase {
 
     func testTagUrl() throws {
         // Given
-        let params: [TagParameters] = [.include]
+        let params: [TagParameters] = [.include(value: "recent_posts")]
         let slug = "tag"
 
         // When
         guard let expectedUrlComp = URLComponents(string: TestData.tagUrl),
-              let url = try ButterCMSClient.Tags.get(slug: slug, apiKey: TestData.apiKey, parameters: params).getURLRequest().url,
+              let url = try ButterCMSClient.Tags.get(slug: slug, config: uut, parameters: params).getURLRequest().url,
               let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
         else {
-            XCTFail("Wromng test data")
+            XCTFail("Wrong test data")
             return
         }
         // Then
@@ -358,13 +405,13 @@ final class ButterCMSSDKTests: XCTestCase {
 
     func testTagssUrl() throws {
         // Given
-        let params: [TagParameters] = [.include]
+        let params: [TagParameters] = [.include(value: "recent_posts")]
         // When
         guard let expectedUrlComp = URLComponents(string: TestData.tagsUrl),
-              let url = try ButterCMSClient.Tags.all(apiKey: TestData.apiKey, parameters: params).getURLRequest().url,
+              let url = try ButterCMSClient.Tags.all(config: uut, parameters: params).getURLRequest().url,
               let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
         else {
-            XCTFail("Wromng test data")
+            XCTFail("Wrong test data")
             return
         }
         // Then
@@ -381,7 +428,7 @@ final class ButterCMSSDKTests: XCTestCase {
             return ((HTTPURLResponse(), data))
         }
         // When
-        uut.getTag(slug: "slug", parameters: [.include]) { result in
+        uut.getTag(slug: "slug", parameters: [.include(value: "recent_posts")]) { result in
             switch result {
             case .success(let object):
                 // Then
@@ -404,7 +451,52 @@ final class ButterCMSSDKTests: XCTestCase {
             return ((HTTPURLResponse(), data))
         }
         // When
-        uut.getTags(parameters: [.include]) { result in
+        uut.getTags(parameters: [.include(value: "recent_posts")]) { result in
+            switch result {
+            case .success(let objects):
+                // Then
+                XCTAssertNotNil(objects, "Received nil from getTags")
+                XCTAssertTrue(objects.data.count > 0, "Receved no authors")
+            case .failure(let error):
+                XCTFail("getTags fialed with Error: \(error)")
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+
+
+
+    // MARK: Feeds
+    func testFeedsUrl() throws {
+        // Given
+        let params: [FeedsParameters] = [
+                .categorySlug(value: "catSlug"),
+                .tagSlug(value: "tagSlug")
+        ]
+        // When
+        guard let expectedUrlComp = URLComponents(string: TestData.feedsUrl),
+              let url = try ButterCMSClient.Feeds.get(name: "rss", config: uut, parameters: params).getURLRequest().url,
+              let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        else {
+            XCTFail("Wrong test data")
+            return
+        }
+        // Then
+        XCTAssertTrue(expectedUrlComp.isEqual(rhs: urlComp), "URL is not as expected")
+    }
+
+    func testRssFeeds() {
+        let expectation = XCTestExpectation(description: "API expectation")
+        MockURLProtocol.requestHandler = { _ in
+            // Given mock data
+            guard let data = TestData.rssFeeds.data(using: .utf8) else {
+                throw MockURLProtocolError.canNotParse("Incorrect mock json data")
+            }
+            return ((HTTPURLResponse(), data))
+        }
+        // When
+        uut.getFeeds(name: "rss", parameters: [.categorySlug(value: "catSlug"), .tagSlug(value: "tagSLug")]) { result in
             switch result {
             case .success(let objects):
                 // Then
@@ -420,27 +512,139 @@ final class ButterCMSSDKTests: XCTestCase {
 
     // MARK: Pages
 
-    func testPageUrl() throws {
+    func testGetPagesUrl() throws {
         // Given
         let params: [PageParameters] = [
             .levels(value: 1),
             .locale(value: "en"),
-            .preview]
+            .preview(value: 1)]
         let slug = "page"
 
         // When
-        guard let expectedUrlComp = URLComponents(string: TestData.pageUrl),
-              let url = try ButterCMSClient.Pages.get(pageType: "pageType", slug: slug,  apiKey: TestData.apiKey, parameters: params).getURLRequest().url,
+        guard let expectedUrlComp = URLComponents(string: TestData.getPagesUrl),
+              let url = try ButterCMSClient.Pages.get(pageType: "pageType", slug: slug, config: uut, parameters: params).getURLRequest().url,
               let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
         else {
-            XCTFail("Wromng test data")
+            XCTFail("Wrong test data")
             return
         }
         // Then
         XCTAssertTrue(expectedUrlComp.isEqual(rhs: urlComp), "URL is not as expected")
     }
 
-    func testPagesUrl() throws {
+    func testGetPagesUrlWithDefaultPreviewTrue() throws {
+        // Given
+        let params: [PageParameters] = [
+            .levels(value: 1),
+            .locale(value: "en"),
+            .preview(value: 1)]
+        let slug = "page"
+
+        // When
+        uut.previewMode = true
+        guard let expectedUrlComp = URLComponents(string: TestData.getPagesUrlWithDefaultPreviewmodeTrue),
+              let url = try ButterCMSClient.Pages.get(pageType: "pageType", slug: slug, config: uut, parameters: params).getURLRequest().url,
+              let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        else {
+            XCTFail("Wrong test data")
+            return
+        }
+        // Then
+        XCTAssertTrue(expectedUrlComp.isEqual(rhs: urlComp), "URL is not as expected")
+    }
+
+    func testGetPagesUrlWithOverwritenDefaultPreviewTrue() throws {
+        // Given
+        let params: [PageParameters] = [
+            .preview(value: 0),
+            .levels(value: 1),
+            .locale(value: "en")]
+        let slug = "page"
+
+        // When
+        uut.previewMode = true
+        guard let expectedUrlComp = URLComponents(string: TestData.getPagesUrlWithOvervritenDefaultPreviewmodeTrue),
+              let url = try ButterCMSClient.Pages.get(pageType: "pageType", slug: slug, config: uut, parameters: params).getURLRequest().url,
+              let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        else {
+            XCTFail("Wrong test data")
+            return
+        }
+        // Then
+        XCTAssertTrue(expectedUrlComp.isEqual(rhs: urlComp), "URL is not as expected")
+    }
+
+    func testSearchPagesUrl() throws {
+        // Given
+        let params: [PageSearchParameters] = [
+            .query(value: "buttercms"),
+            .pageType(value: "page_type"),
+            .page(value: 1),
+            .pageSize(value: 10),
+            .levels(value: 1),
+            .locale(value: "en"),
+            .preview(value: 1)]
+
+        // When
+        guard let expectedUrlComp = URLComponents(string: TestData.searchPagesUrl),
+              let url = try ButterCMSClient.Pages.search(config: uut, parameters: params).getURLRequest().url,
+              let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        else {
+            XCTFail("Wrong test data")
+            return
+        }
+        // Then
+        XCTAssertTrue(expectedUrlComp.isEqual(rhs: urlComp), "URL is not as expected")
+    }
+
+    func testSearchPagesUrlWithDefaultPreviewTrue() throws {
+        // Given
+        let params: [PageSearchParameters] = [
+            .query(value: "buttercms"),
+            .pageType(value: "page_type"),
+            .page(value: 1),
+            .pageSize(value: 10),
+            .levels(value: 1),
+            .locale(value: "en")]
+
+        // When
+        uut.previewMode = true
+        guard let expectedUrlComp = URLComponents(string: TestData.searchPagesUrlWithDefaultPreviewmodeTrue),
+              let url = try ButterCMSClient.Pages.search(config: uut, parameters: params).getURLRequest().url,
+              let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        else {
+            XCTFail("Wrong test data")
+            return
+        }
+        // Then
+        XCTAssertTrue(expectedUrlComp.isEqual(rhs: urlComp), "URL is not as expected")
+    }
+
+    func testSearchPagesUrlWithOverwritenDefaultPreviewTrue() throws {
+        // Given
+        let params: [PageSearchParameters] = [
+            .query(value: "buttercms"),
+            .pageType(value: "page_type"),
+            .page(value: 1),
+            .preview(value: 0),
+            .pageSize(value: 10),
+            .levels(value: 1),
+            .locale(value: "en")]
+
+        // When
+        uut.previewMode = true
+        guard let expectedUrlComp = URLComponents(string: TestData.searchPagesUrlWithOvervritenDefaultPreviewmodeTrue),
+              let url = try ButterCMSClient.Pages.search(config: uut, parameters: params).getURLRequest().url,
+              let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        else {
+            XCTFail("Wrong test data")
+            return
+        }
+        // Then
+        XCTAssertTrue(expectedUrlComp.isEqual(rhs: urlComp), "URL is not as expected")
+    }
+    ///
+    func testAllPagesUrl() throws {
         // Given
         let params: [PagesParameters] = [
             .page(value: 1),
@@ -450,19 +654,69 @@ final class ButterCMSSDKTests: XCTestCase {
             .order(value: "published"),
             .fields(key: "hero.firstName", value: "Barbar"),
             .fields(key: "hero.lastName", value: "Conan"),
-            .preview]
+            .preview(value: 1)]
 
         // When
-        guard let expectedUrlComp = URLComponents(string: TestData.pagesUrl),
-              let url = try ButterCMSClient.Pages.all(pageType: "pageType", apiKey: TestData.apiKey, parameters: params).getURLRequest().url,
+        guard let expectedUrlComp = URLComponents(string: TestData.allPagesUrl),
+              let url = try ButterCMSClient.Pages.all(pageType: "pageType", config: uut, parameters: params).getURLRequest().url,
               let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
         else {
-            XCTFail("Wromng test data")
+            XCTFail("Wrong test data")
             return
         }
         // Then
         XCTAssertTrue(expectedUrlComp.isEqual(rhs: urlComp), "URL is not as expected")
     }
+
+    func testAllPagesUrlWithDefaultPreviewTrue() throws {
+        // Given
+        let params: [PagesParameters] = [
+            .page(value: 1),
+            .pageSize(value: 10),
+            .levels(value: 1),
+            .locale(value: "en"),
+            .order(value: "published"),
+            .fields(key: "hero.firstName", value: "Barbar"),
+            .fields(key: "hero.lastName", value: "Conan")]
+        // When
+        uut.previewMode = true
+        guard let expectedUrlComp = URLComponents(string: TestData.allPagesUrlUrlWithDefaultPreviewmodeTrue),
+              let url = try ButterCMSClient.Pages.all(pageType: "pageType", config: uut, parameters: params).getURLRequest().url,
+              let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        else {
+            XCTFail("Wrong test data")
+            return
+        }
+        // Then
+        XCTAssertTrue(expectedUrlComp.isEqual(rhs: urlComp), "URL is not as expected")
+    }
+
+    func testAllPagesUrlWithOverwritenDefaultPreviewTrue() throws {
+        // Given
+        let params: [PagesParameters] = [
+            .page(value: 1),
+            .preview(value: 0),
+            .pageSize(value: 10),
+            .levels(value: 1),
+            .locale(value: "en"),
+            .order(value: "published"),
+            .fields(key: "hero.firstName", value: "Barbar"),
+            .fields(key: "hero.lastName", value: "Conan")]
+
+        // When
+        uut.previewMode = true
+        guard let expectedUrlComp = URLComponents(string: TestData.allPagesUrlUrlWithOverwritenDefaultPreviewmodeTrue),
+              let url = try ButterCMSClient.Pages.all(pageType: "pageType", config: uut, parameters: params).getURLRequest().url,
+              let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        else {
+            XCTFail("Wrong test data")
+            return
+        }
+        // Then
+        XCTAssertTrue(expectedUrlComp.isEqual(rhs: urlComp), "URL is not as expected")
+    }
+
+    ///
 
 
     func testPage() {
@@ -477,7 +731,7 @@ final class ButterCMSSDKTests: XCTestCase {
         // When
         uut.getPage(slug: "test-slug",
                     parameters: [
-                        .preview,
+                        .preview(value: 1),
                         .locale(value: "en"),
                         .levels(value: 2)
                     ],
@@ -506,7 +760,7 @@ final class ButterCMSSDKTests: XCTestCase {
         }
         // When
         uut.getPages(parameters: [
-            .preview,
+            .preview(value: 1),
             .page(value: 1),
             .pageSize(value: 10),
             .locale(value: "en"),
@@ -527,7 +781,34 @@ final class ButterCMSSDKTests: XCTestCase {
 
     // MARK: Collections
 
-    func testCollectionUrl() throws {
+    func testGetCollectionUrl() throws {
+        // Given
+        let params: [CollectionParameters] = [
+            .preview(value: 1),
+            .keys(list: "key1,key2,key3"),
+            .test(value: 1),
+            .fields(name: "field", value: "value"),
+            .order(by: "field", direction: .desc),
+            .page(value: 1),
+            .pageSize(value: 10),
+            .locale(value: "en"),
+            .levels(value: 1)
+        ]
+        let slug = "coll1"
+
+        // When
+        guard let expectedUrlComp = URLComponents(string: TestData.getCollectionsUrl),
+              let url = try ButterCMSClient.Collections.get(slug: slug, config: uut, parameters: params).getURLRequest().url,
+              let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        else {
+            XCTFail("Wrong test data")
+            return
+        }
+        // Then
+        XCTAssertTrue(expectedUrlComp.isEqual(rhs: urlComp), "URL is not as expected")
+    }
+
+    func testGetCollectionUrlWithDefaultPreviewTrue() throws {
         // Given
         let params: [CollectionParameters] = [
             .keys(list: "key1,key2,key3"),
@@ -542,17 +823,45 @@ final class ButterCMSSDKTests: XCTestCase {
         let slug = "coll1"
 
         // When
-        guard let expectedUrlComp = URLComponents(string: TestData.collectionsUrl),
-              let url = try ButterCMSClient.Collections.get(slug: slug, apiKey: TestData.apiKey, parameters: params).getURLRequest().url,
+        uut.previewMode = true
+        guard let expectedUrlComp = URLComponents(string: TestData.getCollectionsUrlWithDefaultPreviewTrue),
+              let url = try ButterCMSClient.Collections.get(slug: slug, config: uut, parameters: params).getURLRequest().url,
               let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
         else {
-            XCTFail("Wromng test data")
+            XCTFail("Wrong test data")
             return
         }
         // Then
         XCTAssertTrue(expectedUrlComp.isEqual(rhs: urlComp), "URL is not as expected")
     }
-    
+
+    func testGetCollectionUrlWithOverwritenDefaultPreviewTrue() throws {
+        // Given
+        let params: [CollectionParameters] = [
+            .preview(value: 0),
+            .keys(list: "key1,key2,key3"),
+            .test(value: 1),
+            .fields(name: "field", value: "value"),
+            .order(by: "field", direction: .desc),
+            .page(value: 1),
+            .pageSize(value: 10),
+            .locale(value: "en"),
+            .levels(value: 1)
+        ]
+        let slug = "coll1"
+
+        // When
+        uut.previewMode = true
+        guard let expectedUrlComp = URLComponents(string: TestData.getCollectionsUrlWithOverwritenDefaultPreviewTrue),
+              let url = try ButterCMSClient.Collections.get(slug: slug, config: uut, parameters: params).getURLRequest().url,
+              let urlComp = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        else {
+            XCTFail("Wrong test data")
+            return
+        }
+        // Then
+        XCTAssertTrue(expectedUrlComp.isEqual(rhs: urlComp), "URL is not as expected")
+    }
 
     func testCollection() {
         let expectation = XCTestExpectation(description: "API expectation")

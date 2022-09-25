@@ -7,7 +7,7 @@
 
 import Foundation
 
-internal protocol Parameters {
+internal protocol Parameters: Equatable {
     func getParam() -> (String, String)
 }
 
@@ -26,34 +26,43 @@ public struct ApiKeyParameter: Parameters {
  // MARK: Blog Engine parameters
 
 public enum AuthorParameters: Parameters {
-    case include
+    case include(value: String)
     func getParam() -> (String, String) {
         switch self {
-        case .include: return ("include", "recent_posts")
+        case .include(let value): return ("include", value)
         }
     }
 }
 
 public enum CategoryParameters: Parameters {
-    case include
+    case include(value: String)
     func getParam() -> (String, String) {
         switch self {
-        case .include: return ("include", "recent_posts")
+        case .include(let value): return ("include", value)
         }
     }
 }
 
+
 public enum TagParameters: Parameters {
-    case include
+    case include(value: String)
     func getParam() -> (String, String) {
         switch self {
-        case .include: return ("include", "recent_posts")
+        case .include(let value): return ("include", value)
+        }
+    }
+}
+public enum TagsParameters: Parameters {
+    case include(value: String)
+    func getParam() -> (String, String) {
+        switch self {
+        case .include(let value): return ("include", value)
         }
     }
 }
 
 public enum PostsParameters: Parameters {
-    case preview
+    case preview(value: Int)
     case page(value: Int)
     case pageSize(value: Int)
     case excludeBody
@@ -62,7 +71,7 @@ public enum PostsParameters: Parameters {
     case tagSlug(value: String)
     func getParam() -> (String, String) {
         switch self {
-        case .preview: return ("preview", "1")
+        case .preview(let value): return ("preview", String(value))
         case .page(let value): return ("page", String(value))
         case .pageSize(let value): return ("page_size", String(value))
         case .excludeBody: return ("exclude_body", "true")
@@ -85,15 +94,27 @@ public enum PostSearchParameters: Parameters {
         }
     }
 }
+
+public enum FeedsParameters: Parameters {
+    case categorySlug(value: String)
+    case tagSlug(value: String)
+    func getParam() -> (String, String) {
+        switch self {
+        case .categorySlug(let value): return ("category_slug", value)
+        case .tagSlug(let value): return ("tag_slug", value)
+        }
+    }
+}
+
 // MARK: Page parameters
 
 public enum PageParameters: Parameters {
-    case preview
+    case preview(value: Int)
     case locale(value: String)
     case levels(value: Int)
     func getParam() -> (String, String) {
         switch self {
-        case .preview: return ("preview", "1")
+        case .preview(let value): return ("preview", String(value))
         case .locale(let value): return ("locale", value)
         case .levels(let value): return ("levels", String(value))
         }
@@ -101,7 +122,7 @@ public enum PageParameters: Parameters {
 }
 
 public enum PagesParameters: Parameters {
-    case preview
+    case preview(value: Int)
     case page(value: Int)
     case pageSize(value: Int)
     case locale(value: String)
@@ -110,7 +131,7 @@ public enum PagesParameters: Parameters {
     case fields(key: String, value: String)
     func getParam() -> (String, String) {
         switch self {
-        case .preview: return ("preview", "1")
+        case .preview(let value): return ("preview", String(value))
         case .page(let value): return ("page", String(value))
         case .pageSize(let value): return ("page_size", String(value))
         case .locale(let value): return ("locale", value)
@@ -121,8 +142,30 @@ public enum PagesParameters: Parameters {
     }
 }
 
+public enum PageSearchParameters: Parameters {
+    case query(value: String)
+    case pageType(value: String)
+    case preview(value: Int)
+    case page(value: Int)
+    case pageSize(value: Int)
+    case locale(value: String)
+    case levels(value: Int)
+    func getParam() -> (String, String) {
+        switch self {
+        case .query(let value): return ("query", value)
+        case .pageType(let value): return ("page_type", value)
+        case .preview(let value): return ("preview", String(value))
+        case .page(let value): return ("page", String(value))
+        case .pageSize(let value): return ("page_size", String(value))
+        case .locale(let value): return ("locale", value)
+        case .levels(let value): return ("levels", String(value))
+        }
+    }
+}
+
 // MARK: Collection parameters
 public enum CollectionParameters: Parameters {
+    case preview(value: Int)
     case keys(list: String)
     case test(value: Int)
     case fields(name: String, value: String)
@@ -133,6 +176,7 @@ public enum CollectionParameters: Parameters {
     case levels(value: Int)
     func getParam() -> (String, String) {
         switch self {
+        case .preview(let value): return ("preview", String(value))
         case .keys(let list): return ("keys", list)
         case .test(let value): return ("test", String(value))
         case .fields(let name, let value): return ("fields." + name, value)

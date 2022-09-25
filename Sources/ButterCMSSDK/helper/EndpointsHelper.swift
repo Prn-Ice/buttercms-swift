@@ -9,8 +9,8 @@ import Foundation
 extension ButterCMSClient {
     
     internal enum Authors: URLRequestConvertible {
-        case get(slug: String, apiKey: String, parameters: [AuthorParameters])
-        case all(apiKey: String, parameters: [AuthorParameters])
+        case get(slug: String, config: ButterCMSClientConfig, parameters: [AuthorParameters])
+        case all(config: ButterCMSClientConfig, parameters: [AuthorParameters])
 
         func httpMethod() -> String {
             switch self {
@@ -29,18 +29,18 @@ extension ButterCMSClient {
             }
         }
 
-        func urlParameters() -> [Parameters] {
+        func urlParameters() -> [any Parameters] {
             switch self {
-            case let .all(apiKey, parameters),
-                 let .get(_, apiKey, parameters):
-                return [ApiKeyParameter(apiKey: apiKey)] + parameters
+            case let .all(config, parameters),
+                 let .get(_, config, parameters):
+                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters
             }
         }
     }
 
     internal enum Tags: URLRequestConvertible {
-        case get(slug: String, apiKey: String, parameters: [TagParameters])
-        case all(apiKey: String, parameters: [TagParameters])
+        case get(slug: String, config: ButterCMSClientConfig, parameters: [TagParameters])
+        case all(config: ButterCMSClientConfig, parameters: [TagParameters])
 
         func httpMethod() -> String {
             switch self {
@@ -59,19 +59,45 @@ extension ButterCMSClient {
             }
         }
 
-        func urlParameters() -> [Parameters] {
+        func urlParameters() -> [any Parameters] {
             switch self {
-            case let .get(_, apiKey, parameters),
-                 let .all(apiKey, parameters):
-                return [ApiKeyParameter(apiKey: apiKey)] + parameters
+            case let .get(_, config, parameters),
+                 let .all(config, parameters):
+                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters
             }
         }
     }
 
+    internal enum Feeds: URLRequestConvertible {
+        case get(name: String, config: ButterCMSClientConfig, parameters: [FeedsParameters])
+
+        func httpMethod() -> String {
+            switch self {
+            case .get: return "get"
+            }
+        }
+
+        func endpoint() -> String {
+            let base = "\(ButterConstats.SERVER_URL.rawValue)/feeds"
+            switch self {
+            case .get(let name, _, _):
+                return "\(base)/\(name)"
+            }
+        }
+
+        func urlParameters() -> [any Parameters] {
+            switch self {
+            case let .get(_, config, parameters):
+                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters
+            }
+        }
+    }
+
+
     internal enum Posts: URLRequestConvertible {
-        case get(slug: String, apiKey: String)
-        case search(apiKey: String, parameters: [PostSearchParameters])
-        case all(apiKey: String, parameters: [PostsParameters])
+        case get(slug: String, config: ButterCMSClientConfig)
+        case search(config: ButterCMSClientConfig, parameters: [PostSearchParameters])
+        case all(config: ButterCMSClientConfig, parameters: [PostsParameters])
 
         func httpMethod() -> String {
             switch self {
@@ -82,32 +108,36 @@ extension ButterCMSClient {
         }
 
         func endpoint() -> String {
-            let base = "\(ButterConstats.SERVER_URL.rawValue)"
+            let base = "\(ButterConstats.SERVER_URL.rawValue)/posts"
             switch self {
             case .get(let slug, _):
-                return "\(base)/posts/\(slug)"
+                return "\(base)/\(slug)"
             case .search:
                 return "\(base)/search"
             case .all:
-                return "\(base)/posts"
+                return "\(base)"
             }
         }
 
-        func urlParameters() -> [Parameters] {
+        func urlParameters() -> [any Parameters] {
             switch self {
-            case let .get(_, apiKey):
-                return [ApiKeyParameter(apiKey: apiKey)]
-            case let .search(apiKey, parameters):
-                return [ApiKeyParameter(apiKey: apiKey)] + parameters
-            case let .all(apiKey, parameters):
-                return [ApiKeyParameter(apiKey: apiKey)] + parameters
+            case let .get(_, config):
+                return [ApiKeyParameter(apiKey: config.apiKey)]
+            case let .search(config, parameters):
+                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters
+            case let .all(config, parameters):
+                var defaultParams: [PostsParameters] = []
+                if (!parameters.contains( where: { $0 == PostsParameters.preview(value: 1) || $0 == PostsParameters.preview(value: 0) }) && config.previewMode) {
+                    defaultParams.append(PostsParameters.preview(value: 1))
+                }
+                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters + defaultParams
             }
         }
     }
 
     internal enum Categories: URLRequestConvertible {
-        case get(slug: String, apiKey: String, parameters: [CategoryParameters])
-        case all(apiKey: String, parameters: [CategoryParameters])
+        case get(slug: String, config: ButterCMSClientConfig, parameters: [CategoryParameters])
+        case all(config: ButterCMSClientConfig, parameters: [CategoryParameters])
 
         func httpMethod() -> String {
             switch self {
@@ -126,22 +156,24 @@ extension ButterCMSClient {
             }
         }
 
-        func urlParameters() -> [Parameters] {
+        func urlParameters() -> [any Parameters] {
             switch self {
-            case let .get(_, apiKey, parameters),
-                 let .all(apiKey, parameters):
-                return [ApiKeyParameter(apiKey: apiKey)] + parameters
+            case let .get(_, config, parameters),
+                 let .all(config, parameters):
+                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters
             }
         }
     }
 
     internal enum Pages: URLRequestConvertible {
-        case get(pageType: String, slug: String, apiKey: String, parameters: [PageParameters])
-        case all(pageType: String, apiKey: String, parameters: [PagesParameters])
+        case get(pageType: String, slug: String, config: ButterCMSClientConfig, parameters: [PageParameters])
+        case search(config: ButterCMSClientConfig, parameters: [PageSearchParameters])
+        case all(pageType: String, config: ButterCMSClientConfig, parameters: [PagesParameters])
 
         func httpMethod() -> String {
             switch self {
             case .get: return "get"
+            case .search: return "get"
             case .all: return "get"
             }
         }
@@ -151,23 +183,39 @@ extension ButterCMSClient {
             switch self {
             case .get(let pageType, let slug, _, _):
                 return "\(base)/\(pageType)/\(slug)"
+            case .search(_, _):
+                return "\(base)/search"
             case .all(let pageType, _, _):
                 return "\(base)/\(pageType)"
             }
         }
 
-        func urlParameters() -> [Parameters] {
+        func urlParameters() -> [any Parameters] {
             switch self {
-            case let .get(_, _, apiKey, parameters):
-                return [ApiKeyParameter(apiKey: apiKey)] + parameters
-            case let .all(_, apiKey, parameters):
-                return [ApiKeyParameter(apiKey: apiKey)] + parameters
+            case let .get(_, _, config, parameters):
+                var defaultParams: [PageParameters] = []
+                if (!parameters.contains( where: { $0 == PageParameters.preview(value: 1) || $0 == PageParameters.preview(value: 0) }) && config.previewMode) {
+                    defaultParams.append(PageParameters.preview(value: 1))
+                }
+                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters + defaultParams
+            case let .search(config, parameters):
+                var defaultParams: [PageSearchParameters] = []
+                if (!parameters.contains( where: { $0 == PageSearchParameters.preview(value: 1) || $0 == PageSearchParameters.preview(value: 0) }) && config.previewMode) {
+                    defaultParams.append(PageSearchParameters.preview(value: 1))
+                }
+                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters + defaultParams
+            case let .all(_, config, parameters):
+                var defaultParams: [PagesParameters] = []
+                if (!parameters.contains( where: { $0 == PagesParameters.preview(value: 1) || $0 == PagesParameters.preview(value: 0) }) && config.previewMode) {
+                    defaultParams.append(PagesParameters.preview(value: 1))
+                }
+                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters + defaultParams
             }
         }
     }
 
     internal enum Collections: URLRequestConvertible {
-        case get(slug: String, apiKey: String, parameters: [CollectionParameters])
+        case get(slug: String, config: ButterCMSClientConfig, parameters: [CollectionParameters])
 
         func httpMethod() -> String {
             switch self {
@@ -183,10 +231,14 @@ extension ButterCMSClient {
             }
         }
 
-        func urlParameters() -> [Parameters] {
+        func urlParameters() -> [any Parameters] {
             switch self {
-            case let .get(_, apiKey, parameters):
-                return [ApiKeyParameter(apiKey: apiKey)] + parameters
+            case let .get(_, config, parameters):
+                var defaultParams: [CollectionParameters] = []
+                if (!parameters.contains( where: { $0 == CollectionParameters.preview(value: 1) || $0 == CollectionParameters.preview(value: 0) }) && config.previewMode) {
+                    defaultParams.append(CollectionParameters.preview(value: 1))
+                }
+                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters + defaultParams
             }
         }
     }
@@ -194,13 +246,13 @@ extension ButterCMSClient {
 
 protocol URLRequestConvertible {
     func httpMethod() -> String
-    func urlParameters() -> [Parameters]
+    func urlParameters() -> [any Parameters]
     func endpoint() -> String
     func getURLRequest() throws -> URLRequest
 }
 
 extension URLRequestConvertible {
-    func url(parameters: [Parameters]) throws -> URL {
+    func url(parameters: [any Parameters]) throws -> URL {
         guard var components = URLComponents(string: self.endpoint()) else { throw ButterCMSError(error: .canNotConstructUrl)}
         let params = Dictionary(uniqueKeysWithValues: parameters.compactMap { return $0.getParam() })
         components.queryItems = params.map { (key, value) -> URLQueryItem in URLQueryItem(name: key, value: String(value))}

@@ -2,7 +2,7 @@ import PlaygroundSupport
 import Foundation
 import ButterCMSSDK
 
-var butter = ButterCMSClient(apiKey: "3606556ecbd4134ea24b8936a829ab9edaddb583")
+var butter = ButterCMSClient(apiKey: "3606556ecbd4134ea24b8936a829ab9edaddb583", previewMode: true)
 
 
 butter.getTag(slug: "example-tag") { result in
@@ -28,7 +28,7 @@ butter.getTags(parameters: []) { result in
 }
 
 butter.getPosts(parameters: [
-    .preview,
+    .preview(value: 1),
     .excludeBody,
     .page(value: 1),
     .pageSize(value: 10)
@@ -78,7 +78,7 @@ butter.getAuthor(slug: "applifting-sample") { result in
     }
 }
 
-butter.getAuthors(parameters: [.include]) { result in
+butter.getAuthors(parameters: [.include(value: "recent_posts")]) { result in
     switch result {
     case .success(let authors):
         print(" --- getAuthors --- ")
@@ -89,7 +89,7 @@ butter.getAuthors(parameters: [.include]) { result in
     }
 }
 
-butter.getCategory(slug: "example-category", parameters: [.include]) { result in
+butter.getCategory(slug: "example-category", parameters: [.include(value: "recent_posts")]) { result in
     switch result {
     case .success(let category):
         print(" --- getCategory --- ")
@@ -100,7 +100,7 @@ butter.getCategory(slug: "example-category", parameters: [.include]) { result in
     }
 }
 
-butter.getCategories(parameters: [.include]) { result in
+butter.getCategories(parameters: [.include(value: "recent_posts")]) { result in
     switch result {
     case .success(let categories):
         print(" --- getCategories --- ")
@@ -167,9 +167,9 @@ private struct HeroePageFields: Codable {
 
 butter.getPages(parameters: [
                     .locale(value: "en"),
-                    .preview,
-                    .fields(key: "hero.firstname", value: "Barbar"),
-                    .fields(key: "hero.lastname", value: "Conan"),
+                    .preview(value: 1),
+                    .fields(key: "hero.firstname", value: "Peter"),
+                    .fields(key: "hero.lastname", value: "Pan"),
                     .levels(value: 1),
                     .order(value: "updated")
                     ], pageTypeSlug: "herotype", type: HeroePageFields.self) { result in
@@ -183,4 +183,42 @@ butter.getPages(parameters: [
     }
 }
 
+butter.previewMode = true
 
+private struct CaseStudyPageFields: Codable {
+    var title: String
+    var content: String
+    var industry: String
+    var subindustry: String
+    var featuredImage: String
+    var reviewer: String
+    var studyDate: Date
+}
+
+butter.searchPages(parameters: [
+                            .query(value: "Automotive"),
+                            .pageType(value: "case_studies"),
+                            .locale(value: "en"),
+                            .page(value: 1),
+                            .pageSize(value: 10)
+                            ], type: CaseStudyPageFields.self) { result in
+                                    switch result {
+                                    case .success(let pages):
+                                        print(" --- searchPages --- ")
+                                        pages.data.compactMap() { print($0) }
+                                        print(" --------------- ")
+                                    case .failure(let error):
+                                        print("searchPages failed with Error: \(error)")
+                                    }
+}
+
+butter.getFeeds(name: "rss") { result in
+    switch result {
+    case .success(let feeds):
+        print(" --- getFeed --- ")
+        print(feeds.data)
+        print(" --------------- ")
+    case .failure(let error):
+        print("searchPages failed with Error: \(error)")
+    }
+}

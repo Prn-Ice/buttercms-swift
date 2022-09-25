@@ -7,15 +7,17 @@
 
 import Foundation
 @available(iOS 11.0, macOS 10.13, tvOS 11.0, watchOS 4.0, *)
-public struct ButterCMSClient {
+public struct ButterCMSClient: ButterCMSClientConfig {
     
-    let apiKey: String
+    internal let apiKey: String
     let urlSession: URLSession
+    public var previewMode: Bool
     private var jsonDecoder = JSONDecoder()
     
-    public init(apiKey: String, urlSession: URLSession = .shared) {
+    public init(apiKey: String, previewMode: Bool = false, urlSession: URLSession = .shared) {
         self.apiKey = apiKey
         self.urlSession = urlSession
+        self.previewMode = previewMode
         jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
         jsonDecoder.dateDecodingStrategy = .custom { decoder in
             let container = try decoder.singleValueContainer()
@@ -33,62 +35,72 @@ public struct ButterCMSClient {
     }
     
     public func getAuthor(slug: String, parameters: [AuthorParameters] = [], completion: @escaping (Result<AuthorResponse, Error>) -> Void) {
-        let endpoint = Authors.get(slug: slug, apiKey: apiKey, parameters: parameters)
+        let endpoint = Authors.get(slug: slug, config: self, parameters: parameters)
         processRequest(endpoint: endpoint, completion: completion)
     }
     
     public func getAuthors(parameters: [AuthorParameters] = [], completion: @escaping (Result<AuthorsResponse, Error>) -> Void) {
-        let endpoint = Authors.all(apiKey: apiKey, parameters: parameters)
+        let endpoint = Authors.all(config: self, parameters: parameters)
         processRequest(endpoint: endpoint, completion: completion)
     }
     
     public func getPost(slug: String, completion: @escaping (Result<PostResponse, Error>) -> Void) {
-        let endpoint = Posts.get(slug: slug, apiKey: apiKey)
+        let endpoint = Posts.get(slug: slug, config: self)
         processRequest(endpoint: endpoint, completion: completion)
     }
     
     public func getPosts(parameters: [PostsParameters] = [], completion: @escaping (Result<PostsResponse, Error>) -> Void) {
-        let endpoint = Posts.all(apiKey: apiKey, parameters: parameters)
+        let endpoint = Posts.all(config: self, parameters: parameters)
         processRequest(endpoint: endpoint, completion: completion)
     }
     
     public func searchPosts(parameters: [PostSearchParameters] = [], completion: @escaping (Result<PostsResponse, Error>) -> Void) {
-        let endpoint = Posts.search(apiKey: apiKey, parameters: parameters)
+        let endpoint = Posts.search(config: self, parameters: parameters)
         processRequest(endpoint: endpoint, completion: completion)
     }
 
     public func getCategory(slug: String, parameters: [CategoryParameters] = [], completion: @escaping (Result<CategoryResponse, Error>) -> Void) {
-        let endpoint = Categories.get(slug: slug, apiKey: apiKey, parameters: parameters)
+        let endpoint = Categories.get(slug: slug, config: self, parameters: parameters)
         processRequest(endpoint: endpoint, completion: completion)
     }
     
     public func getCategories(parameters: [CategoryParameters] = [], completion: @escaping (Result<CategoriesResponse, Error>) -> Void) {
-        let endpoint = Categories.all(apiKey: apiKey, parameters: parameters)
+        let endpoint = Categories.all(config: self, parameters: parameters)
         processRequest(endpoint: endpoint, completion: completion)
     }
     
     public func getTag(slug: String, parameters: [TagParameters] = [], completion: @escaping (Result<TagResponse, Error>) -> Void) {
-        let endpoint = Tags.get(slug: slug, apiKey: apiKey, parameters: parameters)
+        let endpoint = Tags.get(slug: slug, config: self, parameters: parameters)
         processRequest(endpoint: endpoint, completion: completion)
     }
     
     public func getTags(parameters: [TagParameters] = [], completion: @escaping (Result<TagsResponse, Error>) -> Void) {
-        let endpoint = Tags.all(apiKey: apiKey, parameters: parameters)
+        let endpoint = Tags.all(config: self, parameters: parameters)
         processRequest(endpoint: endpoint, completion: completion)
     }
 
     public func getPage<T: Decodable>(slug: String, parameters: [PageParameters] = [], pageTypeSlug: String, type: T.Type, completion: @escaping (Result<PageResponse<T>, Error>) -> Void) {
-        let endpoint = Pages.get(pageType: pageTypeSlug, slug: slug, apiKey: apiKey, parameters: parameters)
+        let endpoint = Pages.get(pageType: pageTypeSlug, slug: slug, config: self, parameters: parameters)
         processRequest(endpoint: endpoint, completion: completion)
     }
     
     public func getPages<T: Decodable>(parameters: [PagesParameters] = [], pageTypeSlug: String, type: T.Type, completion: @escaping (Result<PagesResponse<T>, Error>) -> Void) {
-        let endpoint = Pages.all(pageType: pageTypeSlug, apiKey: apiKey, parameters: parameters)
+        let endpoint = Pages.all(pageType: pageTypeSlug, config: self, parameters: parameters)
+        processRequest(endpoint: endpoint, completion: completion)
+    }
+
+    public func searchPages<T: Decodable>(parameters: [PageSearchParameters], type: T.Type, completion: @escaping (Result<PagesResponse<T>, Error>) -> Void) {
+        let endpoint = Pages.search(config: self, parameters: parameters)
         processRequest(endpoint: endpoint, completion: completion)
     }
     
     public func getCollection<T: Decodable>(slug: String, parameters: [CollectionParameters] = [], type: T.Type, completion: @escaping (Result<CollectionResponse<T>, Error>) -> Void) {
-        let endpoint = Collections.get(slug: slug, apiKey: apiKey, parameters: parameters)
+        let endpoint = Collections.get(slug: slug, config: self, parameters: parameters)
+        processRequest(endpoint: endpoint, completion: completion)
+    }
+
+    public func getFeeds(name: String, parameters: [FeedsParameters] = [], completion: @escaping (Result<FeedResponse, Error>) -> Void) {
+        let endpoint = Feeds.get(name: name, config: self, parameters: parameters)
         processRequest(endpoint: endpoint, completion: completion)
     }
     
@@ -124,6 +136,11 @@ public struct ButterCMSClient {
             completion(.failure(error))
         }
     }
+}
+
+internal protocol ButterCMSClientConfig {
+    var apiKey: String { get }
+    var previewMode: Bool { get set }
 }
 
 internal enum ButterConstats: String {

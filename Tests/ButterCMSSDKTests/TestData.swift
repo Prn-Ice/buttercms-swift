@@ -21,7 +21,7 @@ struct TestData {
     static let postUrl = "https://api.buttercms.com/v2/posts/the-post?"
                        + "auth_token=" + apiKey
 
-    static let postsUrl = "https://api.buttercms.com/v2/posts?"
+    static let allPostsUrl = "https://api.buttercms.com/v2/posts?"
                         + "page=1&"
                         + "page_size=10&"
                         + "exclude_body=true&"
@@ -30,7 +30,28 @@ struct TestData {
                         + "tag_slug=tagSlug&"
                         + "auth_token=" + apiKey
 
-    static let postsSearchUrl = "https://api.buttercms.com/v2/search?"
+    static let allPostsUrlWithDefaultPreviewTrue = "https://api.buttercms.com/v2/posts?"
+                        + "preview=1&"
+                        + "page=1&"
+                        + "page_size=10&"
+                        + "exclude_body=true&"
+                        + "author_slug=authorSlug&"
+                        + "category_slug=categorySlug&"
+                        + "tag_slug=tagSlug&"
+                        + "auth_token=" + apiKey
+
+    static let allPostsUrlOverwritenWithDefaultPreviewTrue = "https://api.buttercms.com/v2/posts?"
+                        + "preview=0&"
+                        + "page=1&"
+                        + "page_size=10&"
+                        + "exclude_body=true&"
+                        + "author_slug=authorSlug&"
+                        + "category_slug=categorySlug&"
+                        + "tag_slug=tagSlug&"
+                        + "auth_token=" + apiKey
+
+
+    static let postsSearchUrl = "https://api.buttercms.com/v2/posts/search?"
                               + "query=query&"
                               + "page=1&"
                               + "page_size=10&"
@@ -52,24 +73,95 @@ struct TestData {
                          + "include=recent_posts&"
                          + "auth_token=" + apiKey
 
-    static let pageUrl = "https://api.buttercms.com/v2/pages/pageType/page?"
+    static let feedsUrl = "https://api.buttercms.com/v2/feeds/rss?"
+                            + "category_slug=catSlug&"
+                            + "tag_slug=tagSlug&"
+                            + "auth_token=" + apiKey
+
+
+    static let getPagesUrl = "https://api.buttercms.com/v2/pages/pageType/page?"
                          + "locale=en&"
                          + "preview=1&"
                          + "levels=1&"
                          + "auth_token=" + apiKey
 
-    static let pagesUrl = "https://api.buttercms.com/v2/pages/pageType?" 
+    static let getPagesUrlWithDefaultPreviewmodeTrue = "https://api.buttercms.com/v2/pages/pageType/page?"
+                        + "locale=en&"
+                        + "preview=1&"
+                        + "levels=1&"
+                        + "auth_token=" + apiKey
+    static let getPagesUrlWithOvervritenDefaultPreviewmodeTrue = "https://api.buttercms.com/v2/pages/pageType/page?"
+                        + "locale=en&"
+                        + "preview=0&"
+                        + "levels=1&"
+                        + "auth_token=" + apiKey
+
+    static let searchPagesUrl = "https://api.buttercms.com/v2/pages/search?"
+                         + "query=buttercms&"
+                         + "page_type=page_type&"
                          + "locale=en&"
                          + "page=1&"
                          + "page_size=10&"
                          + "preview=1&"
                          + "levels=1&"
-                         + "order=published&"
-                         + "fields.hero.firstName=Barbar&"
-                         + "fields.hero.lastName=Conan&"
                          + "auth_token=" + apiKey
 
-    static let collectionsUrl = "https://api.buttercms.com/v2/content/coll1?"
+    static let searchPagesUrlWithDefaultPreviewmodeTrue = "https://api.buttercms.com/v2/pages/search?"
+                         + "query=buttercms&"
+                         + "page_type=page_type&"
+                         + "locale=en&"
+                         + "page=1&"
+                         + "page_size=10&"
+                         + "preview=1&"
+                         + "levels=1&"
+                         + "auth_token=" + apiKey
+
+    static let searchPagesUrlWithOvervritenDefaultPreviewmodeTrue = "https://api.buttercms.com/v2/pages/search?"
+                         + "query=buttercms&"
+                         + "page_type=page_type&"
+                         + "locale=en&"
+                         + "page=1&"
+                         + "page_size=10&"
+                         + "preview=0&"
+                         + "levels=1&"
+                         + "auth_token=" + apiKey
+
+
+    static let allPagesUrl = "https://api.buttercms.com/v2/pages/pageType?"
+                        + "page=1&"
+                        + "page_size=10&"
+                        + "levels=1&"
+                        + "locale=en&"
+                        + "order=published&"
+                        + "preview=1&"
+                        + "fields.hero.firstName=Barbar&"
+                        + "fields.hero.lastName=Conan&"
+                        + "auth_token=" + apiKey
+
+    static let allPagesUrlUrlWithDefaultPreviewmodeTrue = "https://api.buttercms.com/v2/pages/pageType?"
+                        + "page=1&"
+                        + "page_size=10&"
+                        + "levels=1&"
+                        + "locale=en&"
+                        + "order=published&"
+                        + "preview=1&"
+                        + "fields.hero.firstName=Barbar&"
+                        + "fields.hero.lastName=Conan&"
+                        + "auth_token=" + apiKey
+
+    static let allPagesUrlUrlWithOverwritenDefaultPreviewmodeTrue = "https://api.buttercms.com/v2/pages/pageType?"
+                        + "page=1&"
+                        + "page_size=10&"
+                        + "levels=1&"
+                        + "locale=en&"
+                        + "order=published&"
+                        + "preview=0&"
+                        + "fields.hero.firstName=Barbar&"
+                        + "fields.hero.lastName=Conan&"
+                        + "auth_token=" + apiKey
+
+    static let getCollectionsUrl = "https://api.buttercms.com/v2/content/coll1?"
+                        + "preview=1&"
                         + "keys=key1,key2,key3&"
                         + "test=1&"
                         + "fields.field=value&"
@@ -79,6 +171,31 @@ struct TestData {
                         + "page_size=10&"
                         + "levels=1&"
                         + "auth_token=" + apiKey
+
+    static let getCollectionsUrlWithDefaultPreviewTrue = "https://api.buttercms.com/v2/content/coll1?"
+                        + "preview=1&"
+                        + "keys=key1,key2,key3&"
+                        + "test=1&"
+                        + "fields.field=value&"
+                        + "order=-field&"
+                        + "locale=en&"
+                        + "page=1&"
+                        + "page_size=10&"
+                        + "levels=1&"
+                        + "auth_token=" + apiKey
+
+    static let getCollectionsUrlWithOverwritenDefaultPreviewTrue = "https://api.buttercms.com/v2/content/coll1?"
+                        + "preview=0&"
+                        + "keys=key1,key2,key3&"
+                        + "test=1&"
+                        + "fields.field=value&"
+                        + "order=-field&"
+                        + "locale=en&"
+                        + "page=1&"
+                        + "page_size=10&"
+                        + "levels=1&"
+                        + "auth_token=" + apiKey
+
 
     static let author = """
         {
@@ -732,5 +849,11 @@ struct TestData {
              ]
          }
      }
+    """
+
+    static let rssFeeds = """
+    {
+        "data": "feed data in xml"
+    }
     """
 }
