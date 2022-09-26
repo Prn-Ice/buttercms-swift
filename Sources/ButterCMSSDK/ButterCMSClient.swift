@@ -145,4 +145,5 @@ internal protocol ButterCMSClientConfig {
 
 internal enum ButterConstats: String {
     case SERVER_URL = "https://api.buttercms.com/v2"
+    case API_KEY_PARAM_NAME = "auth_token"
 }

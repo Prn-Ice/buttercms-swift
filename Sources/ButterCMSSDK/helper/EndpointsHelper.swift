@@ -29,11 +29,13 @@ extension ButterCMSClient {
             }
         }
 
-        func urlParameters() -> [any Parameters] {
+        func urlParameters() -> [String: String] {
             switch self {
             case let .all(config, parameters),
-                 let .get(_, config, parameters):
-                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters
+                let .get(_, config, parameters):
+                var paramsTransformed = Dictionary(uniqueKeysWithValues: (parameters).compactMap { return $0.getParam() })
+                paramsTransformed[ButterConstats.API_KEY_PARAM_NAME.rawValue] = config.apiKey
+                return paramsTransformed
             }
         }
     }
@@ -59,11 +61,13 @@ extension ButterCMSClient {
             }
         }
 
-        func urlParameters() -> [any Parameters] {
+        func urlParameters() -> [String: String] {
             switch self {
             case let .get(_, config, parameters),
                  let .all(config, parameters):
-                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters
+                    var paramsTransformed =  Dictionary(uniqueKeysWithValues: parameters.compactMap { return $0.getParam() })
+                    paramsTransformed[ButterConstats.API_KEY_PARAM_NAME.rawValue] = config.apiKey
+                    return paramsTransformed
             }
         }
     }
@@ -85,10 +89,12 @@ extension ButterCMSClient {
             }
         }
 
-        func urlParameters() -> [any Parameters] {
+        func urlParameters() -> [String: String] {
             switch self {
             case let .get(_, config, parameters):
-                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters
+                var paramsTransformed = Dictionary(uniqueKeysWithValues: parameters.compactMap { return $0.getParam() })
+                paramsTransformed[ButterConstats.API_KEY_PARAM_NAME.rawValue] = config.apiKey
+                return paramsTransformed
             }
         }
     }
@@ -119,18 +125,24 @@ extension ButterCMSClient {
             }
         }
 
-        func urlParameters() -> [any Parameters] {
+        func urlParameters() -> [String: String] {
             switch self {
             case let .get(_, config):
-                return [ApiKeyParameter(apiKey: config.apiKey)]
+                var paramsTransformed: [String: String] = [:]
+                paramsTransformed[ButterConstats.API_KEY_PARAM_NAME.rawValue] = config.apiKey
+                return paramsTransformed
             case let .search(config, parameters):
-                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters
+                var paramsTransformed = Dictionary(uniqueKeysWithValues: parameters.compactMap { return $0.getParam() })
+                paramsTransformed[ButterConstats.API_KEY_PARAM_NAME.rawValue] = config.apiKey
+                return paramsTransformed
             case let .all(config, parameters):
                 var defaultParams: [PostsParameters] = []
                 if (!parameters.contains( where: { $0 == PostsParameters.preview(value: 1) || $0 == PostsParameters.preview(value: 0) }) && config.previewMode) {
                     defaultParams.append(PostsParameters.preview(value: 1))
                 }
-                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters + defaultParams
+                var paramsWithDefaultTransformed = Dictionary(uniqueKeysWithValues: (parameters + defaultParams).compactMap { return $0.getParam() })
+                paramsWithDefaultTransformed[ButterConstats.API_KEY_PARAM_NAME.rawValue] = config.apiKey
+                return paramsWithDefaultTransformed
             }
         }
     }
@@ -156,11 +168,13 @@ extension ButterCMSClient {
             }
         }
 
-        func urlParameters() -> [any Parameters] {
+        func urlParameters() -> [String: String] {
             switch self {
             case let .get(_, config, parameters),
                  let .all(config, parameters):
-                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters
+                    var paramsTransformed = Dictionary(uniqueKeysWithValues: parameters.compactMap { return $0.getParam() })
+                    paramsTransformed[ButterConstats.API_KEY_PARAM_NAME.rawValue] = config.apiKey
+                    return paramsTransformed
             }
         }
     }
@@ -190,26 +204,32 @@ extension ButterCMSClient {
             }
         }
 
-        func urlParameters() -> [any Parameters] {
+        func urlParameters() -> [String: String] {
             switch self {
             case let .get(_, _, config, parameters):
                 var defaultParams: [PageParameters] = []
                 if (!parameters.contains( where: { $0 == PageParameters.preview(value: 1) || $0 == PageParameters.preview(value: 0) }) && config.previewMode) {
                     defaultParams.append(PageParameters.preview(value: 1))
                 }
-                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters + defaultParams
+                var paramsWithDefaultTransformed = Dictionary(uniqueKeysWithValues: (parameters + defaultParams).compactMap { return $0.getParam() })
+                paramsWithDefaultTransformed[ButterConstats.API_KEY_PARAM_NAME.rawValue] = config.apiKey
+                return paramsWithDefaultTransformed
             case let .search(config, parameters):
                 var defaultParams: [PageSearchParameters] = []
                 if (!parameters.contains( where: { $0 == PageSearchParameters.preview(value: 1) || $0 == PageSearchParameters.preview(value: 0) }) && config.previewMode) {
                     defaultParams.append(PageSearchParameters.preview(value: 1))
                 }
-                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters + defaultParams
+                var paramsWithDefaultTransformed = Dictionary(uniqueKeysWithValues: (parameters + defaultParams).compactMap { return $0.getParam() })
+                paramsWithDefaultTransformed[ButterConstats.API_KEY_PARAM_NAME.rawValue] = config.apiKey
+                return paramsWithDefaultTransformed
             case let .all(_, config, parameters):
                 var defaultParams: [PagesParameters] = []
                 if (!parameters.contains( where: { $0 == PagesParameters.preview(value: 1) || $0 == PagesParameters.preview(value: 0) }) && config.previewMode) {
                     defaultParams.append(PagesParameters.preview(value: 1))
                 }
-                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters + defaultParams
+                var paramsWithDefaultTransformed = Dictionary(uniqueKeysWithValues: (parameters + defaultParams).compactMap { return $0.getParam() })
+                paramsWithDefaultTransformed[ButterConstats.API_KEY_PARAM_NAME.rawValue] = config.apiKey
+                return paramsWithDefaultTransformed
             }
         }
     }
@@ -231,14 +251,16 @@ extension ButterCMSClient {
             }
         }
 
-        func urlParameters() -> [any Parameters] {
+        func urlParameters() -> [String: String] {
             switch self {
             case let .get(_, config, parameters):
                 var defaultParams: [CollectionParameters] = []
                 if (!parameters.contains( where: { $0 == CollectionParameters.preview(value: 1) || $0 == CollectionParameters.preview(value: 0) }) && config.previewMode) {
                     defaultParams.append(CollectionParameters.preview(value: 1))
                 }
-                return [ApiKeyParameter(apiKey: config.apiKey)] + parameters + defaultParams
+                var paramsWithDefaultTransformed = Dictionary(uniqueKeysWithValues: (parameters + defaultParams).compactMap { return $0.getParam() })
+                paramsWithDefaultTransformed[ButterConstats.API_KEY_PARAM_NAME.rawValue] = config.apiKey
+                return paramsWithDefaultTransformed
             }
         }
     }
@@ -246,16 +268,15 @@ extension ButterCMSClient {
 
 protocol URLRequestConvertible {
     func httpMethod() -> String
-    func urlParameters() -> [any Parameters]
+    func urlParameters() -> [String: String]
     func endpoint() -> String
     func getURLRequest() throws -> URLRequest
 }
 
 extension URLRequestConvertible {
-    func url(parameters: [any Parameters]) throws -> URL {
+    func url(parameters: [String: String]) throws -> URL {
         guard var components = URLComponents(string: self.endpoint()) else { throw ButterCMSError(error: .canNotConstructUrl)}
-        let params = Dictionary(uniqueKeysWithValues: parameters.compactMap { return $0.getParam() })
-        components.queryItems = params.map { (key, value) -> URLQueryItem in URLQueryItem(name: key, value: String(value))}
+        components.queryItems = parameters.map { (key, value) -> URLQueryItem in URLQueryItem(name: key, value: value)}
         guard let url = components.url else { throw ButterCMSError(error: .canNotConstructUrl) }
         return url
     }

@@ -16,12 +16,7 @@ public enum StoringDirection: String {
     case desc = "-"
 }
 
-public struct ApiKeyParameter: Parameters {
-    let apiKey: String
-    func getParam() -> (String, String) {
-        return ("auth_token", apiKey)
-    }
-}
+
 
  // MARK: Blog Engine parameters
 

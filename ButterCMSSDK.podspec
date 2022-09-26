@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'https://github.com/ButterCMS/buttercms-swift.git', :tag => '1.0.9' }
 
   s.ios.deployment_target = '11.0'
-  s.swift_version = '5.6'
+  s.swift_version = '5.0'
 
   s.source_files = 'Sources/ButterCMSSDK/**/*'
 end
