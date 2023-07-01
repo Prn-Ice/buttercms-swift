@@ -3,7 +3,6 @@ import Foundation
 
 @testable import ButterCMSSDK
 
-@available(iOS 11.0, macOS 10.13, tvOS 11.0, watchOS 4.0, *)
 final class ButterCMSSDKTests: XCTestCase {
     var urlSession: URLSession!
     var uut: ButterCMSClient!

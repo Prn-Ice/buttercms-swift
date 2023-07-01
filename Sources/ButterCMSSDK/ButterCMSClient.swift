@@ -7,7 +7,6 @@
 
 import Foundation
 import FoundationNetworking
-@available(iOS 11.0, macOS 10.13, tvOS 11.0, watchOS 4.0, *)
 public struct ButterCMSClient: ButterCMSClientConfig {
     
     internal let apiKey: String
