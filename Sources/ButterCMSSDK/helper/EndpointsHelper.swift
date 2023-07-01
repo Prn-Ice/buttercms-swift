@@ -5,7 +5,9 @@
 //  Created by Martin Srb on 19.08.2021.
 //
 import Foundation
+#if canImport(FoundationNetworking)
 import FoundationNetworking
+#endif
 extension ButterCMSClient {
     
     internal enum Authors: URLRequestConvertible {
